@@ -44,8 +44,9 @@ Benefits:
   return jobs[id as keyof typeof jobs] || null;
 };
 
-export default function JobDetailPage({ params }: { params: { id: string } }) {
-  const job = getJobById(params.id);
+export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const job = getJobById(id);
 
   if (!job) {
     return (

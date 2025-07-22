@@ -35,7 +35,7 @@ export default function PostJobPage() {
     try {
       await createJob(formData);
       setSuccess('Job posted successfully!');
-    } catch (error) {
+    } catch {
       setErrors(['Failed to post job. Please try again.']);
       setIsSubmitting(false);
     }

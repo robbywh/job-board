@@ -33,8 +33,9 @@ Key Responsibilities:
   };
 };
 
-export default function EditJobPage({ params }: { params: { id: string } }) {
-  const job = getJobById(params.id);
+export default async function EditJobPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const job = getJobById(id);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
@@ -90,7 +91,7 @@ export default function EditJobPage({ params }: { params: { id: string } }) {
               <div className="card-body">
                 <h1 className="text-3xl font-bold mb-6">Edit Job Posting</h1>
                 
-                <form action={updateJob.bind(null, params.id)} className="space-y-6">
+                <form action={updateJob.bind(null, id)} className="space-y-6">
                   {/* Job Title */}
                   <div className="form-control">
                     <label className="label" htmlFor="title">
