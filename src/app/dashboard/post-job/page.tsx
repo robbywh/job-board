@@ -25,7 +25,6 @@ export default function PostJobPage() {
     };
 
     const validation = validateJobForm(jobData);
-    
     if (!validation.isValid) {
       setErrors(validation.errors);
       setIsSubmitting(false);
