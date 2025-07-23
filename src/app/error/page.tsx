@@ -2,8 +2,9 @@
 
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
-export default function ErrorPage() {
+function ErrorContent() {
   const searchParams = useSearchParams()
   const message = searchParams.get('message') || 'Something went wrong. Please try again.'
 
@@ -37,5 +38,19 @@ export default function ErrorPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ErrorPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen hero bg-gradient-to-br from-error/20 via-base-200 to-warning/20">
+        <div className="hero-content text-center">
+          <div className="loading loading-spinner loading-lg"></div>
+        </div>
+      </div>
+    }>
+      <ErrorContent />
+    </Suspense>
   )
 }
