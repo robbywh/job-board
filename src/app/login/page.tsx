@@ -86,18 +86,6 @@ export default function LoginPage() {
                   className="input input-bordered focus:input-primary transition-all duration-200" 
                   required 
                 />
-                <label className="label">
-                  <a href="#" className="label-text-alt link link-hover text-primary">
-                    Forgot password? 🔑
-                  </a>
-                </label>
-              </div>
-              
-              <div className="form-control">
-                <label className="label cursor-pointer justify-start">
-                  <input type="checkbox" className="checkbox checkbox-primary checkbox-sm" />
-                  <span className="label-text ml-2">Remember me</span>
-                </label>
               </div>
               
               <div className="form-control mt-6 space-y-3">
