@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from "react";
-import Navbar from "@/components/Navbar";
 import JobCard from "@/components/JobCard";
 import JobFilters, { JobFilters as FilterTypes } from "@/components/JobFilters";
 
@@ -74,8 +73,6 @@ export default function JobsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
-      <Navbar />
-
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="text-center mb-8">
