@@ -17,6 +17,18 @@ interface JobsTableProps {
 
 export default function JobsTable({ jobs }: JobsTableProps) {
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [selectedJob, setSelectedJob] = useState<JobWithCompany | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = (job: JobWithCompany) => {
+    setSelectedJob(job);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedJob(null);
+    setIsModalOpen(false);
+  };
 
   // Filter jobs based on status
   const filteredJobs = statusFilter === 'all' 
@@ -24,7 +36,7 @@ export default function JobsTable({ jobs }: JobsTableProps) {
     : jobs.filter(job => job.status === statusFilter);
 
   return (
-    <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg min-h-[600px]">
+    <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
       <div className="card-body">
         <div className="flex justify-between items-center mb-6">
           <h2 className="card-title text-2xl">Your Job Postings</h2>
@@ -122,20 +134,14 @@ export default function JobsTable({ jobs }: JobsTableProps) {
                     </td>
                     <td className="text-sm">{new Date(job.created_at).toLocaleDateString()}</td>
                     <td>
-                      <div className="dropdown dropdown-end">
-                        <div tabIndex={0} role="button" className="btn btn-ghost btn-xs">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
-                          </svg>
-                        </div>
-                        <ul tabIndex={0} className="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-52 z-[9999] border border-base-300">
-                          <li><Link href={`/jobs/${job.id}`} className="hover:bg-base-200">View</Link></li>
-                          <li><Link href={`/dashboard/edit-job/${job.id}`} className="hover:bg-base-200">Edit</Link></li>
-                          <li>
-                            <DeleteJobButton jobId={job.id} jobTitle={job.title} />
-                          </li>
-                        </ul>
-                      </div>
+                      <button 
+                        onClick={() => openModal(job)}
+                        className="btn btn-ghost btn-xs"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+                        </svg>
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -154,6 +160,49 @@ export default function JobsTable({ jobs }: JobsTableProps) {
           )}
         </div>
       </div>
+      
+      {/* Actions Modal */}
+      {isModalOpen && selectedJob && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg mb-4">Actions for &ldquo;{selectedJob.title}&rdquo;</h3>
+            <div className="flex flex-col gap-2">
+              {selectedJob.status === 'active' && (
+                <Link 
+                  href={`/jobs/${selectedJob.id}`} 
+                  className="btn btn-outline btn-primary"
+                  onClick={closeModal}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                  View Job
+                </Link>
+              )}
+              <Link 
+                href={`/dashboard/edit-job/${selectedJob.id}`} 
+                className="btn btn-outline btn-secondary"
+                onClick={closeModal}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                Edit Job
+              </Link>
+              {<div className="divider"></div>}
+              <DeleteJobButton 
+                jobId={selectedJob.id} 
+                jobTitle={selectedJob.title} 
+              />
+            </div>
+            <div className="modal-action">
+              <button className="btn" onClick={closeModal}>Close</button>
+            </div>
+          </div>
+          <div className="modal-backdrop" onClick={closeModal}></div>
+        </div>
+      )}
     </div>
   );
 }

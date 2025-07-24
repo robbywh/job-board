@@ -129,7 +129,8 @@ export async function createJob(prevState: FormState, formData: FormData): Promi
         location,
         type: jobType as 'Full-Time' | 'Part-Time' | 'Contract',
         user_id: user.id,
-        company_id: company.id
+        company_id: company.id,
+        status: 'active'
       })
 
     if (jobError) {
@@ -171,7 +172,7 @@ export async function updateJob(jobId: string, formData: FormData) {
   }
 
   // Ensure user exists in users table
-  const { data: existingUser, error: userCheckError } = await supabase
+  const { error: userCheckError } = await supabase
     .from('users')
     .select('id')
     .eq('id', user.id)
@@ -330,6 +331,45 @@ export async function deleteJob(jobId: string) {
     
     console.error('Unexpected error in deleteJob:', error)
     throw new Error(`Failed to delete job: ${error instanceof Error ? error.message : 'Unknown error'}`)
+  }
+}
+
+export async function toggleJobStatus(jobId: string, newStatus: 'active' | 'inactive') {
+  const supabase = await createClient()
+
+  try {
+    // Get the current user
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      redirect('/')
+    }
+
+    // Update job status
+    const { error } = await supabase
+      .from('jobs')
+      .update({ status: newStatus })
+      .eq('id', jobId)
+      .eq('user_id', user.id) // Ensure user can only update their own jobs
+
+    if (error) {
+      console.error('Job status update error:', error)
+      throw new Error(`Failed to update job status: ${error.message}`)
+    }
+
+    revalidatePath('/dashboard')
+    revalidatePath(`/jobs/${jobId}`)
+    revalidatePath(`/dashboard/edit-job/${jobId}`)
+
+  } catch (error) {
+    // Don't catch redirect errors
+    if (error && typeof error === 'object' && 'digest' in error && 
+        typeof error.digest === 'string' && error.digest.includes('NEXT_REDIRECT')) {
+      throw error
+    }
+    
+    console.error('Unexpected error in toggleJobStatus:', error)
+    throw new Error(`Failed to update job status: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
 }
 

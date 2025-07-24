@@ -1,10 +1,12 @@
-import Image from "next/image";
 import { updateJob } from "../../actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { getJobByIdWithAuth } from "@/lib/jobs";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { getBreadcrumbs } from "@/lib/breadcrumbs";
+import EditJobFormClient from "./EditJobFormClient";
+import DeleteJobModal from "@/components/job/DeleteJobModal";
+import PauseJobButton from "@/components/job/PauseJobButton";
 
 export default async function EditJobPage({ params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient();
@@ -46,124 +48,10 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                     </p>
                   </div>
                   
-                  <form action={updateJob.bind(null, id)} className="space-y-5">
-                    {/* Job Title */}
-                    <div className="form-control">
-                      <div className="mb-2">
-                        <label className="label-text font-medium">Job Title <span className="text-error">*</span></label>
-                      </div>
-                      <input 
-                        name="title" 
-                        type="text" 
-                        defaultValue={job.title}
-                        placeholder="e.g. Senior React Developer"
-                        className="input input-bordered focus:input-primary text-base" 
-                        required 
-                      />
-                    </div>
-
-                    {/* Company */}
-                    <div className="form-control">
-                      <div className="mb-2">
-                        <label className="label-text font-medium">Company <span className="text-error">*</span></label>
-                      </div>
-                      <div className="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
-                        <div className="avatar">
-                          <div className="w-10 h-10 rounded bg-base-300">
-                            {job.companies.logo_url ? (
-                              <Image 
-                                src={job.companies.logo_url} 
-                                alt={`${job.companies.name} logo`} 
-                                width={40}
-                                height={40}
-                                className="object-cover rounded" 
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-base-content/60">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="font-semibold">{job.companies.name}</div>
-                          <div className="text-sm text-base-content/60">Company cannot be changed when editing</div>
-                        </div>
-                      </div>
-                      <input type="hidden" name="companyId" value={job.company_id} />
-                      <input type="hidden" name="isNewCompany" value="false" />
-                    </div>
-
-                    {/* Location and Job Type Row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-                      {/* Location */}
-                      <div className="form-control">
-                        <div className="mb-2">
-                          <label className="label-text font-medium">Location <span className="text-error">*</span></label>
-                        </div>
-                        <input 
-                          name="location" 
-                          type="text" 
-                          defaultValue={job.location}
-                          placeholder="San Francisco, CA or Remote"
-                          className="input input-bordered focus:input-primary text-base" 
-                          required 
-                        />
-                      </div>
-
-                      {/* Job Type */}
-                      <div className="form-control">
-                        <div className="mb-2">
-                          <label className="label-text font-medium">Job Type <span className="text-error">*</span></label>
-                        </div>
-                        <select 
-                          name="jobType" 
-                          className="select select-bordered focus:select-primary text-base" 
-                          defaultValue={job.type}
-                          required
-                        >
-                          <option value="">Select job type</option>
-                          <option value="Full-Time">Full-Time</option>
-                          <option value="Part-Time">Part-Time</option>
-                          <option value="Contract">Contract</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* Job Description */}
-                    <div className="form-control">
-                      <div className="mb-2">
-                        <label className="label-text font-medium">Job Description <span className="text-error">*</span></label>
-                      </div>
-                      <textarea 
-                        name="description" 
-                        defaultValue={job.description}
-                        className="textarea textarea-bordered h-28 sm:h-32 focus:textarea-primary resize-none text-base w-full"
-                        placeholder="Describe the role, responsibilities, requirements, and what makes this opportunity exciting..."
-                        required
-                      ></textarea>
-                      <div className="mt-1">
-                        <span className="label-text-alt">Minimum 50 characters • Be specific about daily tasks and growth opportunities</span>
-                      </div>
-                    </div>
-
-                    {/* Submit Button */}
-                    <div className="form-control pt-6 sm:pt-8">
-                      <button type="submit" className="btn btn-primary btn-lg w-full">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Update Job
-                      </button>
-                      <div className="text-center mt-3">
-                        <span className="label-text-alt text-base-content/60 text-xs sm:text-sm">
-                          Changes will be updated immediately
-                        </span>
-                      </div>
-                    </div>
-                  </form>
+                  <EditJobFormClient 
+                    job={job}
+                    updateJobAction={updateJob.bind(null, id)}
+                  />
                 </div>
               </div>
             </div>
@@ -183,7 +71,9 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                     <div className="space-y-4 pt-2">
                       <div className="flex justify-between items-center">
                         <span className="text-base-content/70">Status:</span>
-                        <div className="badge badge-success">Active</div>
+                        <div className={`badge ${job.status === 'active' ? 'badge-success' : 'badge-error'}`}>
+                          {job.status === 'active' ? 'Active' : 'Inactive'}
+                        </div>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-base-content/70">Applications:</span>
@@ -199,12 +89,20 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                       </div>
                       <div className="divider my-2"></div>
                       <div className="grid grid-cols-1 gap-2">
-                        <button className="btn btn-warning btn-sm">
-                          Pause Job Posting
-                        </button>
-                        <button className="btn btn-error btn-outline btn-sm">
-                          Delete Job
-                        </button>
+                        <PauseJobButton 
+                          jobId={job.id} 
+                          currentStatus={job.status} 
+                          variant="block" 
+                        />
+                        <DeleteJobModal
+                          jobId={job.id}
+                          jobTitle={job.title}
+                          trigger={
+                            <button className="btn btn-error btn-outline btn-sm w-full">
+                              Delete Job
+                            </button>
+                          }
+                        />
                       </div>
                     </div>
                   </div>
@@ -226,7 +124,9 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
                         <span className="text-base-content/70">Status:</span>
-                        <div className="badge badge-success">Active</div>
+                        <div className={`badge ${job.status === 'active' ? 'badge-success' : 'badge-error'}`}>
+                          {job.status === 'active' ? 'Active' : 'Inactive'}
+                        </div>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-base-content/70">Applications:</span>
@@ -245,12 +145,20 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                     <div className="divider"></div>
                     
                     <div className="space-y-2">
-                      <button className="btn btn-warning btn-sm btn-block">
-                        Pause Job Posting
-                      </button>
-                      <button className="btn btn-error btn-outline btn-sm btn-block">
-                        Delete Job
-                      </button>
+                      <PauseJobButton 
+                        jobId={job.id} 
+                        currentStatus={job.status} 
+                        variant="block" 
+                      />
+                      <DeleteJobModal
+                        jobId={job.id}
+                        jobTitle={job.title}
+                        trigger={
+                          <button className="btn btn-error btn-outline btn-sm btn-block">
+                            Delete Job
+                          </button>
+                        }
+                      />
                     </div>
                   </div>
                 </div>
