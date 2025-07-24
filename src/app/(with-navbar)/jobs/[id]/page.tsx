@@ -1,18 +1,20 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import JobApplicationForm from "./JobApplicationForm";
 
 interface JobData {
-  id: number;
+  id: string;
   title: string;
   company: string;
   location: string;
   type: string;
-  salary: string;
+  salary?: string;
   description: string;
   postedAt: string;
+  companyLogo?: string | null;
   companyInfo: {
     size: string;
     industry: string;
@@ -20,51 +22,46 @@ interface JobData {
   };
 }
 
-// Mock job data - this would come from your database
+// Fetch job data from Supabase
 const getJobById = async (id: string): Promise<JobData | null> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 100));
+  const supabase = await createClient();
   
-  const jobs: Record<string, JobData> = {
-    "1": {
-      id: 1,
-      title: "Senior Frontend Developer",
-      company: "TechCorp Inc.",
-      location: "San Francisco, CA",
-      type: "Full-Time",
-      salary: "$120,000 - $150,000",
-      description: `We're looking for a Senior Frontend Developer to join our dynamic team and help build the next generation of web applications.
+  const { data: job, error } = await supabase
+    .from('jobs')
+    .select(`
+      *,
+      companies (
+        id,
+        name,
+        logo_url
+      )
+    `)
+    .eq('id', id)
+    .eq('status', 'active')
+    .single();
 
-Key Responsibilities:
-• Develop and maintain high-quality React applications
-• Collaborate with design and backend teams
-• Optimize applications for maximum speed and scalability
-• Mentor junior developers and participate in code reviews
-• Stay up-to-date with the latest frontend technologies
+  if (error) {
+    console.error('Error fetching job:', error);
+    return null;
+  }
 
-Requirements:
-• 5+ years of experience with React and TypeScript
-• Strong knowledge of HTML, CSS, and JavaScript
-• Experience with state management libraries (Redux, Zustand)
-• Familiarity with testing frameworks (Jest, React Testing Library)
-• Understanding of CI/CD pipelines and deployment processes
-
-Benefits:
-• Competitive salary and equity package
-• Health, dental, and vision insurance
-• Flexible work arrangements
-• Professional development budget
-• Unlimited PTO`,
-      postedAt: "2024-01-15",
-      companyInfo: {
-        size: "500-1000 employees",
-        industry: "Technology",
-        website: "https://techcorp.com"
-      }
+  // Transform the data to match the expected format
+  return {
+    id: job.id,
+    title: job.title,
+    company: job.companies?.name || 'Unknown Company',
+    location: job.location,
+    type: job.type,
+    salary: undefined, // Not stored in database
+    description: job.description,
+    postedAt: job.created_at,
+    companyLogo: job.companies?.logo_url || null,
+    companyInfo: {
+      size: '1-50 employees', // Default value since not stored in DB
+      industry: 'Technology', // Default value since not stored in DB
+      website: '#' // Default value since not stored in DB
     }
   };
-  
-  return jobs[id] || null;
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -91,8 +88,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const job = await getJobById(id);
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
 
   if (!job) {
     notFound();
@@ -116,9 +111,33 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
               <div className="card-body">
                 <div className="flex justify-between items-start mb-6">
-                  <div>
-                    <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
-                    <p className="text-xl text-base-content/70 font-medium">{job.company}</p>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-4 mb-4">
+                      {/* Company Logo */}
+                      <div className="avatar">
+                        <div className="w-16 h-16 rounded-lg bg-base-200 flex items-center justify-center">
+                          {job.companyLogo ? (
+                            <Image 
+                              src={job.companyLogo} 
+                              alt={`${job.company} logo`} 
+                              width={64}
+                              height={64}
+                              className="object-cover rounded-lg" 
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-base-content/60">
+                              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
+                        <p className="text-xl text-base-content/70 font-medium">{job.company}</p>
+                      </div>
+                    </div>
                     <div className="flex items-center gap-4 mt-3 text-base-content/60">
                       <div className="flex items-center gap-1">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,12 +152,14 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                         </svg>
                         {job.type}
                       </div>
-                      <div className="flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                        </svg>
-                        {job.salary}
-                      </div>
+                      {job.salary && (
+                        <div className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                          </svg>
+                          {job.salary}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className={`badge badge-lg ${
@@ -181,80 +202,6 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                 </button>
               </div>
             </div>
-
-            {/* Company Info */}
-            <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg mb-6">
-              <div className="card-body">
-                <h3 className="card-title text-lg mb-4">About {job.company}</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-base-content/60">Industry</span>
-                    <span className="font-medium">{job.companyInfo.industry}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-base-content/60">Company Size</span>
-                    <span className="font-medium">{job.companyInfo.size}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-base-content/60">Website</span>
-                    <a href={job.companyInfo.website} target="_blank" rel="noopener noreferrer" className="link link-primary">
-                      Visit Website
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Job Stats */}
-            <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
-              <div className="card-body">
-                <h3 className="card-title text-lg mb-4">Job Details</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-base-content/60">Posted</span>
-                    <span className="font-medium">{new Date(job.postedAt).toLocaleDateString()}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-base-content/60">Applications</span>
-                    <span className="font-medium">23 candidates</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-base-content/60">Views</span>
-                    <span className="font-medium">156 views</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Application Form */}
-            <JobApplicationForm 
-              jobId={job.id}
-              jobTitle={job.title}
-              company={job.company}
-            />
-          </div>
-        </div>
-
-        {/* Similar Jobs */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6">Similar Jobs</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
-                <div className="card-body">
-                  <h3 className="card-title text-lg">Frontend Developer</h3>
-                  <p className="text-base-content/70">Another Tech Company</p>
-                  <div className="text-sm text-base-content/60">
-                    Remote • Full-Time
-                  </div>
-                  <div className="card-actions justify-end mt-4">
-                    <Link href="/jobs/2" className="btn btn-primary btn-sm">
-                      View Details
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>

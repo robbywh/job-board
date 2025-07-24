@@ -1,23 +1,28 @@
 'use client'
 
 import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import JobCard from "@/components/job/JobCard";
 import JobFilters, { JobFilters as FilterTypes } from "@/components/job/JobFilters";
 import { LoadingCard } from "@/components/ui/Loading";
 
 interface Job {
-  id: number;
+  id: string;
   title: string;
   company: string;
   location: string;
   type: string;
   description: string;
   postedAt: string;
-  salary?: string;
+  companyId: string;
+  companyLogo?: string | null;
 }
 
 interface JobsContentProps {
   initialJobs: Job[];
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
   initialFilters?: {
     search?: string;
     location?: string;
@@ -25,7 +30,15 @@ interface JobsContentProps {
   };
 }
 
-export default function JobsContent({ initialJobs, initialFilters = {} }: JobsContentProps) {
+export default function JobsContent({ 
+  initialJobs, 
+  totalCount, 
+  totalPages, 
+  currentPage,
+  initialFilters = {} 
+}: JobsContentProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [filteredJobs, setFilteredJobs] = useState(initialJobs);
   const [isFiltering, setIsFiltering] = useState(false);
   const [currentFilters, setCurrentFilters] = useState<FilterTypes>({
@@ -34,11 +47,50 @@ export default function JobsContent({ initialJobs, initialFilters = {} }: JobsCo
     jobTypes: initialFilters.jobTypes || []
   });
 
+  // Handle page navigation
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', page.toString());
+    
+    // Preserve existing filters
+    if (currentFilters.search) params.set('search', currentFilters.search);
+    if (currentFilters.location) params.set('location', currentFilters.location);
+    if (currentFilters.jobTypes.length > 0) params.set('jobTypes', currentFilters.jobTypes.join(','));
+    
+    router.push(`?${params.toString()}`);
+  };
+
   const handleFiltersChange = (filters: FilterTypes) => {
     setIsFiltering(true);
     setCurrentFilters(filters);
     
-    // Simulate filter processing delay
+    // For now, we'll navigate to a new page with filters in URL
+    // In a real app, you might want to implement client-side filtering 
+    // or make a new server request with filters
+    const params = new URLSearchParams(searchParams);
+    params.set('page', '1'); // Reset to first page when filtering
+    
+    if (filters.search?.trim()) {
+      params.set('search', filters.search.trim());
+    } else {
+      params.delete('search');
+    }
+    
+    if (filters.location?.trim()) {
+      params.set('location', filters.location.trim());
+    } else {
+      params.delete('location');
+    }
+    
+    if (filters.jobTypes.length > 0) {
+      params.set('jobTypes', filters.jobTypes.join(','));
+    } else {
+      params.delete('jobTypes');
+    }
+    
+    router.push(`?${params.toString()}`);
+    
+    // For immediate feedback, we'll do client-side filtering of current data
     setTimeout(() => {
       let filtered = initialJobs;
 
@@ -92,7 +144,7 @@ export default function JobsContent({ initialJobs, initialFilters = {} }: JobsCo
       <div className="lg:w-3/4">
         <div className="flex justify-between items-center mb-6">
           <p className="text-base-content/70">
-            {filteredJobs.length} job{filteredJobs.length !== 1 ? 's' : ''} found
+            Showing {((currentPage - 1) * 10) + 1}-{Math.min(currentPage * 10, totalCount)} of {totalCount} job{totalCount !== 1 ? 's' : ''}
           </p>
           <select className="select select-bordered select-sm">
             <option>Sort by: Newest</option>
@@ -132,14 +184,48 @@ export default function JobsContent({ initialJobs, initialFilters = {} }: JobsCo
         )}
 
         {/* Pagination */}
-        {filteredJobs.length > 0 && (
+        {totalPages > 1 && (
           <div className="flex justify-center mt-8">
             <div className="join">
-              <button className="join-item btn btn-sm">«</button>
-              <button className="join-item btn btn-sm btn-active">1</button>
-              <button className="join-item btn btn-sm">2</button>
-              <button className="join-item btn btn-sm">3</button>
-              <button className="join-item btn btn-sm">»</button>
+              <button 
+                className="join-item btn btn-sm" 
+                disabled={currentPage === 1}
+                onClick={() => handlePageChange(currentPage - 1)}
+              >
+                «
+              </button>
+              
+              {/* Show page numbers */}
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNum;
+                if (totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+                
+                return (
+                  <button
+                    key={pageNum}
+                    className={`join-item btn btn-sm ${pageNum === currentPage ? 'btn-active' : ''}`}
+                    onClick={() => handlePageChange(pageNum)}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+              
+              <button 
+                className="join-item btn btn-sm" 
+                disabled={currentPage === totalPages}
+                onClick={() => handlePageChange(currentPage + 1)}
+              >
+                »
+              </button>
             </div>
           </div>
         )}

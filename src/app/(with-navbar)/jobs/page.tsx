@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import JobsContent from './JobsContent';
 import JobsPageSkeleton from './JobsPageSkeleton';
+import { createClient } from '@/utils/supabase/server';
 
 export const metadata: Metadata = {
   title: "Browse Jobs | Job Board",
@@ -14,53 +15,55 @@ export const metadata: Metadata = {
   },
 };
 
-// Mock data for demonstration - this would come from your database
-const getMockJobs = async () => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 100));
+const JOBS_PER_PAGE = 10;
+
+// Fetch jobs from Supabase with pagination
+const getJobsFromSupabase = async (page: number = 1) => {
+  const supabase = await createClient();
   
-  return [
-    {
-      id: 1,
-      title: "Senior Frontend Developer",
-      company: "TechCorp Inc.",
-      location: "San Francisco, CA",
-      type: "Full-Time",
-      description: "We're looking for a Senior Frontend Developer to join our dynamic team...",
-      postedAt: "2024-01-15",
-      salary: "$120,000 - $150,000"
-    },
-    {
-      id: 2,
-      title: "Product Manager",
-      company: "StartupXYZ",
-      location: "New York, NY",
-      type: "Full-Time",
-      description: "Join our product team and help shape the future of our platform...",
-      postedAt: "2024-01-14",
-      salary: "$140,000 - $180,000"
-    },
-    {
-      id: 3,
-      title: "UX Designer",
-      company: "Design Studio",
-      location: "Remote",
-      type: "Contract",
-      description: "We need a talented UX Designer for a 6-month project...",
-      postedAt: "2024-01-13",
-      salary: "$80 - $120/hr"
-    },
-    {
-      id: 4,
-      title: "Backend Engineer",
-      company: "CloudTech",
-      location: "Seattle, WA",
-      type: "Part-Time",
-      description: "Looking for a part-time backend engineer to help with our API...",
-      postedAt: "2024-01-12",
-      salary: "$90,000 - $110,000"
-    }
-  ];
+  const from = (page - 1) * JOBS_PER_PAGE;
+  const to = from + JOBS_PER_PAGE - 1;
+  
+  const { data: jobs, error, count } = await supabase
+    .from('jobs')
+    .select(`
+      *,
+      companies (
+        id,
+        name,
+        logo_url
+      )
+    `, { count: 'exact' })
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (error) {
+    console.error('Error fetching jobs:', error);
+    return { jobs: [], totalCount: 0, totalPages: 0 };
+  }
+
+  const totalPages = Math.ceil((count || 0) / JOBS_PER_PAGE);
+  
+  // Transform the data to match the expected format
+  const transformedJobs = jobs?.map(job => ({
+    id: job.id,
+    title: job.title,
+    company: job.companies?.name || 'Unknown Company',
+    location: job.location,
+    type: job.type,
+    description: job.description,
+    postedAt: job.created_at,
+    companyId: job.company_id,
+    companyLogo: job.companies?.logo_url || null,
+    salary: undefined, // Not stored in database
+  })) || [];
+
+  return {
+    jobs: transformedJobs,
+    totalCount: count || 0,
+    totalPages,
+  };
 };
 
 export default async function JobsPage({
@@ -68,9 +71,11 @@ export default async function JobsPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  // Server-side data fetching
-  const jobs = await getMockJobs();
   const params = await searchParams;
+  const currentPage = typeof params.page === 'string' ? parseInt(params.page, 10) : 1;
+  
+  // Server-side data fetching from Supabase
+  const { jobs, totalCount, totalPages } = await getJobsFromSupabase(currentPage);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
@@ -86,6 +91,9 @@ export default async function JobsPage({
         <Suspense fallback={<JobsPageSkeleton />}>
           <JobsContent 
             initialJobs={jobs} 
+            totalCount={totalCount}
+            totalPages={totalPages}
+            currentPage={currentPage}
             initialFilters={{
               search: typeof params.search === 'string' ? params.search : '',
               location: typeof params.location === 'string' ? params.location : '',
