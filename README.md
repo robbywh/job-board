@@ -14,11 +14,11 @@ A modern job board application built with Next.js, DaisyUI, and Supabase for aut
 
 ## Tech Stack
 
-- **Frontend**: Next.js 14, React, TypeScript
+- **Frontend**: 15.4.2, React, TypeScript
 - **UI Components**: DaisyUI (Tailwind CSS)
 - **Authentication**: Supabase Auth
 - **Database**: Supabase (PostgreSQL)
-- **Deployment**: Vercel (recommended)
+- **Deployment**: Vercel
 
 ## Setup Instructions
 
@@ -319,28 +319,16 @@ Create a `.env.local` file with the following variables:
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-
-# Optional: Custom domain for production
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 ## Deployment
 
-### Vercel (Recommended)
+### Vercel
 
 1. Push your code to GitHub
 2. Connect your repository to Vercel
 3. Add environment variables in Vercel dashboard
 4. Deploy automatically on every push
-
-### Other Platforms
-
-The application can be deployed on any platform that supports Next.js:
-
-- Netlify
-- Railway
-- AWS Amplify
-- Digital Ocean App Platform
 
 ## Contributing
 
