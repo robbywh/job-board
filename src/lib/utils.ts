@@ -31,10 +31,6 @@ export function getJobTypeColor(type: string): string {
       return 'badge-secondary';
     case 'contract':
       return 'badge-accent';
-    case 'internship':
-      return 'badge-info';
-    case 'freelance':
-      return 'badge-warning';
     default:
       return 'badge-neutral';
   }
