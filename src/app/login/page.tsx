@@ -21,7 +21,6 @@ export default function LoginPage() {
   }
   return (
     <div className="min-h-screen hero bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
-      {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
@@ -180,7 +179,6 @@ export default function LoginPage() {
         </div>
       </div>
       
-      {/* Floating elements for visual interest */}
       <div className="absolute bottom-10 left-10 hidden lg:block">
         <div className="badge badge-primary badge-lg gap-2">
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

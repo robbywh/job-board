@@ -11,7 +11,6 @@ export async function login(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  // Validate input
   const validation = validateAuthInput(email, password)
   if (!validation.success) {
     return { error: validation.error }
@@ -37,13 +36,11 @@ export async function signup(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  // Validate input
   const validation = validateAuthInput(email, password)
   if (!validation.success) {
     return { error: validation.error }
   }
 
-  // Create auth user
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
@@ -56,7 +53,6 @@ export async function signup(formData: FormData) {
 
   revalidatePath('/', 'layout')
   
-  // Check if email confirmation is required
   if (authData.user && !authData.user.email_confirmed_at) {
     redirect('/auth/confirm-email')
   }
