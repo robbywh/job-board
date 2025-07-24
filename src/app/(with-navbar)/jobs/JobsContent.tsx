@@ -46,6 +46,16 @@ export default function JobsContent({
     location: initialFilters.location || '',
     jobTypes: initialFilters.jobTypes || []
   });
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest'>('newest');
+
+  // Sort jobs function
+  const sortJobs = (jobs: Job[], sortOrder: 'newest' | 'oldest') => {
+    return [...jobs].sort((a, b) => {
+      const dateA = new Date(a.postedAt).getTime();
+      const dateB = new Date(b.postedAt).getTime();
+      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+  };
 
   // Handle page navigation
   const handlePageChange = (page: number) => {
@@ -116,13 +126,46 @@ export default function JobsContent({
         filtered = filtered.filter(job => filters.jobTypes.includes(job.type));
       }
 
-      setFilteredJobs(filtered);
+      // Apply sorting
+      const sortedJobs = sortJobs(filtered, sortBy);
+      setFilteredJobs(sortedJobs);
       setIsFiltering(false);
     }, 300);
   };
 
-  // Apply initial filters on mount
+  // Handle sort change
+  const handleSortChange = (newSortBy: 'newest' | 'oldest') => {
+    setSortBy(newSortBy);
+    const sortedJobs = sortJobs(filteredJobs, newSortBy);
+    setFilteredJobs(sortedJobs);
+  };
+
+  // Handle clear filters - unified function for both JobFilters and Clear Filters button
+  const handleClearFilters = () => {
+    const newFilters = { search: '', location: '', jobTypes: [] };
+    setCurrentFilters(newFilters);
+    
+    // Update URL and apply filters
+    const params = new URLSearchParams(searchParams);
+    params.set('page', '1');
+    params.delete('search');
+    params.delete('location');
+    params.delete('jobTypes');
+    
+    router.push(`?${params.toString()}`);
+    
+    // Apply cleared filters to show all jobs
+    const sortedJobs = sortJobs(initialJobs, sortBy);
+    setFilteredJobs(sortedJobs);
+  };
+
+  // Apply initial sorting and filters on mount
   useEffect(() => {
+    // Apply initial sorting
+    const sortedJobs = sortJobs(initialJobs, sortBy);
+    setFilteredJobs(sortedJobs);
+    
+    // Apply filters if any exist
     if (initialFilters.search || initialFilters.location || (initialFilters.jobTypes && initialFilters.jobTypes.length > 0)) {
       handleFiltersChange(currentFilters);
     }
@@ -133,7 +176,7 @@ export default function JobsContent({
     <div className="flex flex-col lg:flex-row gap-8">
       <div className="lg:w-1/4">
         <JobFilters 
-          onFiltersChange={handleFiltersChange} 
+          onFiltersChange={handleFiltersChange}
           initialFilters={currentFilters}
           isLoading={isFiltering}
         />
@@ -144,10 +187,13 @@ export default function JobsContent({
           <p className="text-base-content/70">
             Showing {((currentPage - 1) * 10) + 1}-{Math.min(currentPage * 10, totalCount)} of {totalCount} job{totalCount !== 1 ? 's' : ''}
           </p>
-          <select className="select select-bordered select-sm">
-            <option>Sort by: Newest</option>
-            <option>Sort by: Oldest</option>
-            <option>Sort by: Company</option>
+          <select 
+            className="select select-bordered select-sm"
+            value={sortBy}
+            onChange={(e) => handleSortChange(e.target.value as 'newest' | 'oldest')}
+          >
+            <option value="newest">Sort by: Newest</option>
+            <option value="oldest">Sort by: Oldest</option>
           </select>
         </div>
 
@@ -171,7 +217,7 @@ export default function JobsContent({
             <h3 className="text-lg font-semibold mb-2">No jobs found</h3>
             <p className="text-base-content/60 mb-4">Try adjusting your filters to see more results</p>
             <button 
-              onClick={() => handleFiltersChange({ search: '', location: '', jobTypes: [] })}
+              onClick={handleClearFilters}
               className="btn btn-primary btn-sm"
             >
               Clear Filters
