@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from "next/link";
 import Footer from "@/components/ui/Footer";
 import { createClient } from '@/utils/supabase/server'
-import LoginForm from '@/components/auth/LoginForm'
+import LoginForm from '@/app/LoginForm'
 
 export default async function Home() {
   // Check if user is already authenticated on the server
