@@ -14,8 +14,8 @@ A modern job board application built with Next.js, DaisyUI, and Supabase for aut
 
 ## Tech Stack
 
-- **Frontend**: 15.4.2, React, TypeScript
-- **UI Components**: DaisyUI (Tailwind CSS)
+- **Frontend**: Next.js 15.4.2, React 19.1.0, TypeScript 5
+- **UI Components**: DaisyUI 5 (Tailwind CSS v4)
 - **Authentication**: Supabase Auth
 - **Database**: Supabase (PostgreSQL)
 - **Deployment**: Vercel
@@ -31,32 +31,24 @@ cd job-board
 
 ### 2. Install and Configure DaisyUI
 
-Install DaisyUI for beautiful UI components:
+Install DaisyUI and Tailwind CSS v4:
 
 ```bash
 npm install daisyui@latest
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+npm install -D tailwindcss@4 @tailwindcss/postcss
 ```
 
-Update your `tailwind.config.js`:
+Create `postcss.config.mjs`:
 
 ```javascript
-module.exports = {
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [require("daisyui")],
-  daisyui: {
-    themes: ["light", "dark", "cupcake"], // Add your preferred themes
-  },
-}
+const config = {
+  plugins: ["@tailwindcss/postcss"],
+};
+
+export default config;
 ```
+
+**Note:** Tailwind CSS v4 uses inline configuration - no separate config file needed. Configure themes and plugins through CSS imports in your `globals.css`.
 
 ### 3. Install and Configure Supabase
 
@@ -209,12 +201,6 @@ npm install
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the application.
@@ -257,22 +243,64 @@ erDiagram
 ### Application Structure
 
 ```
-src/
-├── app/                    # Next.js App Router
-│   ├── (auth)/            # Authentication pages
-│   ├── (with-navbar)/     # Pages with navigation
-│   │   ├── jobs/          # Job browsing pages
-│   │   └── dashboard/     # User dashboard
-│   └── api/               # API routes
-├── components/            # Reusable components
-│   ├── ui/               # UI components
-│   ├── job/              # Job-related components
-│   └── auth/             # Authentication components
-├── lib/                  # Utility functions
-│   ├── supabase/         # Supabase client
-│   ├── jobs.ts           # Job-related functions
-│   └── auth.ts           # Authentication helpers
-└── types/                # TypeScript type definitions
+job-board/
+├── src/
+│   ├── app/                       # Next.js App Router
+│   │   ├── globals.css            # Global styles with Tailwind imports
+│   │   ├── layout.tsx             # Root layout
+│   │   ├── page.tsx               # Home page
+│   │   ├── LoginForm.tsx          # Login form component
+│   │   ├── auth/                  # Authentication routes
+│   │   │   └── confirm/
+│   │   │       └── route.ts       # Email confirmation handler
+│   │   ├── login/                 # Login page
+│   │   │   └── actions.tsx        # Login server actions
+│   │   └── (with-navbar)/         # Route group with navbar layout
+│   │       ├── layout.tsx         # Navbar layout wrapper
+│   │       ├── dashboard/         # Dashboard pages
+│   │       │   ├── page.tsx       # Dashboard home
+│   │       │   ├── JobsTable.tsx
+│   │       │   ├── DeleteJobButton.tsx
+│   │       │   ├── actions.ts     # Dashboard server actions
+│   │       │   ├── edit-job/[id]/ # Edit job functionality
+│   │       │   └── post-job/      # Post job functionality
+│   │       └── jobs/              # Job listings
+│   │           ├── page.tsx       # Jobs listing page
+│   │           ├── JobsContent.tsx
+│   │           └── [id]/          # Individual job details
+│   ├── components/                # Reusable UI components
+│   │   ├── job/                   # Job-related components
+│   │   │   ├── JobCard.tsx
+│   │   │   ├── JobFilters.tsx
+│   │   │   └── DeleteJobModal.tsx
+│   │   ├── navbar/                # Navigation components
+│   │   │   ├── Navbar.tsx
+│   │   │   ├── UserDropdown.tsx
+│   │   │   └── LogoutButton.tsx
+│   │   └── ui/                    # Generic UI components
+│   │       ├── Breadcrumb.tsx
+│   │       ├── ErrorDisplay.tsx
+│   │       └── Loading.tsx
+│   ├── lib/                       # Business logic and utilities
+│   │   ├── auth.ts                # Authentication logic
+│   │   ├── jobs.ts                # Job-related business logic
+│   │   ├── user.ts                # User-related logic
+│   │   ├── utils.ts               # General utilities
+│   │   └── breadcrumbs.tsx        # Breadcrumb utilities
+│   ├── types/                     # TypeScript type definitions
+│   │   └── database.ts            # Supabase database schema types
+│   ├── utils/                     # External utilities
+│   │   └── supabase/              # Supabase client configurations
+│   │       ├── client.ts          # Client-side Supabase client
+│   │       ├── server.ts          # Server-side Supabase client
+│   │       └── middleware.ts      # Supabase middleware client
+│   └── middleware.ts              # Next.js middleware for auth
+├── public/                        # Static assets
+│   └── *.svg                      # SVG icons
+├── package.json                   # Dependencies and scripts
+├── next.config.ts                 # Next.js configuration
+├── postcss.config.mjs             # PostCSS configuration
+└── tsconfig.json                  # TypeScript configuration
 ```
 
 ### Key Features Implementation
