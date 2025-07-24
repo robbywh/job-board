@@ -18,16 +18,19 @@ export default function UserDropdown({ user }: UserDropdownProps) {
 
   return (
     <div className="dropdown dropdown-end">
-      <label 
+      <div 
         tabIndex={0} 
-        className="btn btn-ghost btn-circle avatar group hover:bg-primary/10 transition-all duration-300"
+        role="button"
+        className="btn btn-ghost btn-circle hover:bg-primary/10 transition-all duration-300"
       >
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl">
-          <span className="text-white text-sm font-bold">
-            {user?.email?.[0]?.toUpperCase() || 'U'}
-          </span>
+        <div className="avatar placeholder">
+          <div className="bg-gradient-to-br from-primary to-secondary text-primary-content rounded-full w-10 h-10 shadow-lg transform transition-all duration-300 hover:scale-110 hover:shadow-xl flex items-center justify-center">
+            <div className="text-sm font-bold w-10 h-10 flex items-center justify-center">
+              {user?.email?.[0]?.toUpperCase() || 'U'}
+            </div>
+          </div>
         </div>
-      </label>
+      </div>
       <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-xl bg-base-100 rounded-box w-56 border border-base-300 animate-in slide-in-from-top-2 duration-300">
         <li className="menu-title mb-2">
           <span className="text-primary font-semibold">{user?.email}</span>
