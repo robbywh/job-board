@@ -1,8 +1,31 @@
 import Link from "next/link";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
+import JobApplicationForm from "./JobApplicationForm";
 
-// Mock job data
-const getJobById = (id: string) => {
-  const jobs = {
+interface JobData {
+  id: number;
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  salary: string;
+  description: string;
+  postedAt: string;
+  companyInfo: {
+    size: string;
+    industry: string;
+    website: string;
+  };
+}
+
+// Mock job data - this would come from your database
+const getJobById = async (id: string): Promise<JobData | null> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  const jobs: Record<string, JobData> = {
     "1": {
       id: 1,
       title: "Senior Frontend Developer",
@@ -41,25 +64,38 @@ Benefits:
     }
   };
   
-  return jobs[id as keyof typeof jobs] || null;
+  return jobs[id] || null;
 };
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const job = await getJobById(id);
+  
+  if (!job) {
+    return {
+      title: "Job Not Found | Job Board"
+    };
+  }
+
+  return {
+    title: `${job.title} at ${job.company} | Job Board`,
+    description: `${job.title} position at ${job.company} in ${job.location}. ${job.type} role with competitive salary.`,
+    openGraph: {
+      title: `${job.title} at ${job.company}`,
+      description: `${job.type} position in ${job.location}`,
+      type: "website",
+    },
+  };
+}
 
 export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const job = getJobById(id);
+  const job = await getJobById(id);
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!job) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Job Not Found</h1>
-          <p className="text-base-content/70 mb-6">The job you&#39;re looking for doesn&#39;t exist.</p>
-          <Link href="/jobs" className="btn btn-primary">
-            Back to Jobs
-          </Link>
-        </div>
-      </div>
-    );
+    notFound();
   }
 
   return (
@@ -189,6 +225,13 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                 </div>
               </div>
             </div>
+
+            {/* Application Form */}
+            <JobApplicationForm 
+              jobId={job.id}
+              jobTitle={job.title}
+              company={job.company}
+            />
           </div>
         </div>
 

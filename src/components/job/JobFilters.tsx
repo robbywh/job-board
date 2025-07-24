@@ -4,6 +4,7 @@ import { useState } from "react";
 
 interface JobFiltersProps {
   onFiltersChange?: (filters: JobFilters) => void;
+  initialFilters?: JobFilters;
 }
 
 export interface JobFilters {
@@ -12,12 +13,14 @@ export interface JobFilters {
   jobTypes: string[];
 }
 
-export default function JobFilters({ onFiltersChange }: JobFiltersProps) {
-  const [filters, setFilters] = useState<JobFilters>({
-    search: '',
-    location: '',
-    jobTypes: []
-  });
+export default function JobFilters({ onFiltersChange, initialFilters }: JobFiltersProps) {
+  const [filters, setFilters] = useState<JobFilters>(
+    initialFilters || {
+      search: '',
+      location: '',
+      jobTypes: []
+    }
+  );
 
   const handleSearchChange = (value: string) => {
     const newFilters = { ...filters, search: value };

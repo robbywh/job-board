@@ -1,4 +1,47 @@
-export default function LoadingSpinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
+export default function Loading() {
+  return (
+    <div className="flex flex-col lg:flex-row gap-8">
+      {/* Filters Skeleton */}
+      <div className="lg:w-1/4">
+        <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg animate-pulse">
+          <div className="card-body space-y-4">
+            <div className="h-6 bg-base-300 rounded w-20"></div>
+            <div className="space-y-2">
+              <div className="h-4 bg-base-300 rounded w-16"></div>
+              <div className="h-8 bg-base-300 rounded"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 bg-base-300 rounded w-20"></div>
+              <div className="h-8 bg-base-300 rounded"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 bg-base-300 rounded w-16"></div>
+              <div className="space-y-1">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="h-6 bg-base-300 rounded"></div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Job Cards Skeleton */}
+      <div className="lg:w-3/4 space-y-4">
+        <div className="flex justify-between items-center mb-6">
+          <div className="h-5 bg-base-300 rounded w-32 animate-pulse"></div>
+          <div className="h-8 bg-base-300 rounded w-40 animate-pulse"></div>
+        </div>
+        
+        {[1, 2, 3, 4].map(i => (
+          <LoadingCard key={i} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function LoadingSpinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const sizeClass = {
     sm: "loading-sm",
     md: "loading-md", 

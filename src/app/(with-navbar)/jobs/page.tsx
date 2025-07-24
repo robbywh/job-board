@@ -1,75 +1,79 @@
-'use client'
+import { Suspense } from "react";
+import { Metadata } from "next";
+import { createClient } from "@/utils/supabase/server";
+import JobsContent from "./JobsContent";
+import Loading from "@/components/ui/Loading";
 
-import { useState } from "react";
-import JobCard from "@/components/job/JobCard";
-import JobFilters, { JobFilters as FilterTypes } from "@/components/job/JobFilters";
-
-// Mock data for demonstration
-const mockJobs = [
-  {
-    id: 1,
-    title: "Senior Frontend Developer",
-    company: "TechCorp Inc.",
-    location: "San Francisco, CA",
-    type: "Full-Time",
-    description: "We're looking for a Senior Frontend Developer to join our dynamic team...",
-    postedAt: "2024-01-15"
+export const metadata: Metadata = {
+  title: "Browse Jobs | Job Board",
+  description: "Discover amazing job opportunities from top companies around the world. Find your dream career with our comprehensive job search platform.",
+  keywords: ["jobs", "careers", "employment", "hiring", "job search", "remote work"],
+  openGraph: {
+    title: "Browse Jobs | Job Board",
+    description: "Discover amazing job opportunities from top companies around the world.",
+    type: "website",
   },
-  {
-    id: 2,
-    title: "Product Manager",
-    company: "StartupXYZ",
-    location: "New York, NY",
-    type: "Full-Time",
-    description: "Join our product team and help shape the future of our platform...",
-    postedAt: "2024-01-14"
-  },
-  {
-    id: 3,
-    title: "UX Designer",
-    company: "Design Studio",
-    location: "Remote",
-    type: "Contract",
-    description: "We need a talented UX Designer for a 6-month project...",
-    postedAt: "2024-01-13"
-  },
-  {
-    id: 4,
-    title: "Backend Engineer",
-    company: "CloudTech",
-    location: "Seattle, WA",
-    type: "Part-Time",
-    description: "Looking for a part-time backend engineer to help with our API...",
-    postedAt: "2024-01-12"
-  }
-];
+};
 
-export default function JobsPage() {
-  const [filteredJobs, setFilteredJobs] = useState(mockJobs);
-
-  const handleFiltersChange = (filters: FilterTypes) => {
-    let filtered = mockJobs;
-
-    // Search filter
-    if (filters.search) {
-      filtered = filtered.filter(job => 
-        job.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-        job.company.toLowerCase().includes(filters.search.toLowerCase())
-      );
+// Mock data for demonstration - this would come from your database
+const getMockJobs = async () => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  return [
+    {
+      id: 1,
+      title: "Senior Frontend Developer",
+      company: "TechCorp Inc.",
+      location: "San Francisco, CA",
+      type: "Full-Time",
+      description: "We're looking for a Senior Frontend Developer to join our dynamic team...",
+      postedAt: "2024-01-15",
+      salary: "$120,000 - $150,000"
+    },
+    {
+      id: 2,
+      title: "Product Manager",
+      company: "StartupXYZ",
+      location: "New York, NY",
+      type: "Full-Time",
+      description: "Join our product team and help shape the future of our platform...",
+      postedAt: "2024-01-14",
+      salary: "$140,000 - $180,000"
+    },
+    {
+      id: 3,
+      title: "UX Designer",
+      company: "Design Studio",
+      location: "Remote",
+      type: "Contract",
+      description: "We need a talented UX Designer for a 6-month project...",
+      postedAt: "2024-01-13",
+      salary: "$80 - $120/hr"
+    },
+    {
+      id: 4,
+      title: "Backend Engineer",
+      company: "CloudTech",
+      location: "Seattle, WA",
+      type: "Part-Time",
+      description: "Looking for a part-time backend engineer to help with our API...",
+      postedAt: "2024-01-12",
+      salary: "$90,000 - $110,000"
     }
+  ];
+};
 
-    // Location filter
-    if (filters.location) {
-      filtered = filtered.filter(job => job.location === filters.location);
-    }
-
-    // Job type filter
-    if (filters.jobTypes.length > 0) {
-      filtered = filtered.filter(job => filters.jobTypes.includes(job.type));
-    }
-
-    setFilteredJobs(filtered);
-  };
+export default async function JobsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  // Server-side data fetching
+  const jobs = await getMockJobs();
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const params = await searchParams;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
@@ -82,55 +86,16 @@ export default function JobsPage() {
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Filters Sidebar */}
-          <div className="lg:w-1/4">
-            <JobFilters onFiltersChange={handleFiltersChange} />
-          </div>
-
-          {/* Job Listings */}
-          <div className="lg:w-3/4">
-            <div className="flex justify-between items-center mb-6">
-              <p className="text-base-content/70">{filteredJobs.length} jobs found</p>
-              <select className="select select-bordered select-sm">
-                <option>Sort by: Newest</option>
-                <option>Sort by: Oldest</option>
-                <option>Sort by: Company</option>
-              </select>
-            </div>
-
-            <div className="space-y-4">
-              {filteredJobs.map((job) => (
-                <JobCard key={job.id} job={job} />
-              ))}
-            </div>
-
-            {filteredJobs.length === 0 && (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 bg-base-300 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold mb-2">No jobs found</h3>
-                <p className="text-base-content/60 mb-4">Try adjusting your filters to see more results</p>
-              </div>
-            )}
-
-            {/* Pagination */}
-            {filteredJobs.length > 0 && (
-              <div className="flex justify-center mt-8">
-                <div className="join">
-                  <button className="join-item btn btn-sm">«</button>
-                  <button className="join-item btn btn-sm btn-active">1</button>
-                  <button className="join-item btn btn-sm">2</button>
-                  <button className="join-item btn btn-sm">3</button>
-                  <button className="join-item btn btn-sm">»</button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <Suspense fallback={<Loading />}>
+          <JobsContent 
+            initialJobs={jobs} 
+            initialFilters={{
+              search: typeof params.search === 'string' ? params.search : '',
+              location: typeof params.location === 'string' ? params.location : '',
+              jobTypes: Array.isArray(params.jobTypes) ? params.jobTypes : typeof params.jobTypes === 'string' ? [params.jobTypes] : []
+            }}
+          />
+        </Suspense>
       </div>
     </div>
   );
