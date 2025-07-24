@@ -275,26 +275,62 @@ export async function updateJob(jobId: string, formData: FormData) {
 export async function deleteJob(jobId: string) {
   const supabase = await createClient()
 
-  // Get the current user
-  const { data: { user } } = await supabase.auth.getUser()
-  
-  if (!user) {
-    redirect('/')
+  try {
+    // Get the current user
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      redirect('/')
+    }
+
+    // Ensure user exists in users table
+    const { error: userCheckError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', user.id)
+      .single()
+
+    if (userCheckError && userCheckError.code === 'PGRST116') {
+      // User doesn't exist, create user record
+      const { error: createUserError } = await supabase
+        .from('users')
+        .insert({
+          id: user.id,
+          email: user.email || ''
+        })
+
+      if (createUserError) {
+        throw new Error(`Failed to create user record: ${createUserError.message}`)
+      }
+    } else if (userCheckError) {
+      throw new Error(`User verification failed: ${userCheckError.message}`)
+    }
+
+    // Delete the job
+    const { error } = await supabase
+      .from('jobs')
+      .delete()
+      .eq('id', jobId)
+      .eq('user_id', user.id) // Ensure user can only delete their own jobs
+
+    if (error) {
+      console.error('Job deletion error:', error)
+      throw new Error(`Failed to delete job: ${error.message}`)
+    }
+
+    revalidatePath('/dashboard')
+    redirect('/dashboard')
+
+  } catch (error) {
+    // Don't catch redirect errors
+    if (error && typeof error === 'object' && 'digest' in error && 
+        typeof error.digest === 'string' && error.digest.includes('NEXT_REDIRECT')) {
+      throw error
+    }
+    
+    console.error('Unexpected error in deleteJob:', error)
+    throw new Error(`Failed to delete job: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
-
-  // Delete the job
-  const { error } = await supabase
-    .from('jobs')
-    .delete()
-    .eq('id', jobId)
-    .eq('user_id', user.id) // Ensure user can only delete their own jobs
-
-  if (error) {
-    throw new Error('Failed to delete job')
-  }
-
-  revalidatePath('/dashboard')
-  redirect('/dashboard')
 }
 
 // Note: toggleJobStatus function removed as 'status' field doesn't exist in the database schema

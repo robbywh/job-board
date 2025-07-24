@@ -1,41 +1,39 @@
 import Link from "next/link";
+import Image from "next/image";
 import { updateJob } from "../../actions";
 import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
+import { Job, Company } from "@/types/database";
 
-// Mock function to get job data
-const getJobById = async (id: string) => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 800));
+// Extended job type with company data
+type JobWithCompany = Job & {
+  companies: Company;
+};
+
+// Function to get job data from Supabase
+const getJobById = async (id: string, userId: string): Promise<JobWithCompany | null> => {
+  const supabase = await createClient();
   
-  // This would normally fetch from your database
-  return {
-    id: parseInt(id),
-    title: "Senior React Developer",
-    company: "My Company",
-    location: "San Francisco, CA",
-    jobType: "Full-Time",
-    salary: "$120,000 - $150,000",
-    description: `We're looking for a Senior Frontend Developer to join our dynamic team and help build the next generation of web applications.
+  const { data: job, error } = await supabase
+    .from('jobs')
+    .select(`
+      *,
+      companies (
+        id,
+        name,
+        logo_url
+      )
+    `)
+    .eq('id', id)
+    .eq('user_id', userId) // Ensure user can only edit their own jobs
+    .single();
 
-Key Responsibilities:
-• Develop and maintain high-quality React applications
-• Collaborate with design and backend teams
-• Optimize applications for maximum speed and scalability
-• Mentor junior developers and participate in code reviews
-• Stay up-to-date with the latest frontend technologies`,
-    requirements: `• 5+ years of experience with React and TypeScript
-• Strong knowledge of HTML, CSS, and JavaScript
-• Experience with state management libraries (Redux, Zustand)
-• Familiarity with testing frameworks (Jest, React Testing Library)
-• Understanding of CI/CD pipelines and deployment processes`,
-    benefits: `• Competitive salary and equity package
-• Health, dental, and vision insurance
-• Flexible work arrangements
-• Professional development budget
-• Unlimited PTO`,
-    applicationInstructions: "Please send your resume and a cover letter explaining why you're interested in this position to careers@company.com"
-  };
+  if (error) {
+    console.error('Error fetching job:', error);
+    return null;
+  }
+
+  return job as JobWithCompany;
 };
 
 export default async function EditJobPage({ params }: { params: Promise<{ id: string }> }) {
@@ -48,7 +46,11 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
   }
 
   const { id } = await params;
-  const job = await getJobById(id);
+  const job = await getJobById(id, user.id);
+  
+  if (!job) {
+    notFound();
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
@@ -85,19 +87,39 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                     />
                   </div>
 
-                  {/* Company Name */}
+                  {/* Company Display - Read Only */}
                   <div className="form-control">
-                    <label className="label" htmlFor="company">
-                      <span className="label-text font-medium">Company Name *</span>
+                    <label className="label">
+                      <span className="label-text font-medium">Company *</span>
                     </label>
-                    <input 
-                      id="company" 
-                      name="company" 
-                      type="text" 
-                      defaultValue={job.company}
-                      className="input input-bordered focus:input-primary" 
-                      required 
-                    />
+                    <div className="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
+                      <div className="avatar">
+                        <div className="w-10 h-10 rounded bg-base-300">
+                          {job.companies.logo_url ? (
+                            <Image 
+                              src={job.companies.logo_url} 
+                              alt={`${job.companies.name} logo`} 
+                              width={40}
+                              height={40}
+                              className="object-cover rounded" 
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-base-content/60">
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-semibold">{job.companies.name}</div>
+                        <div className="text-sm text-base-content/60">Company cannot be changed when editing</div>
+                      </div>
+                    </div>
+                    {/* Hidden inputs for form submission */}
+                    <input type="hidden" name="companyId" value={job.company_id} />
+                    <input type="hidden" name="isNewCompany" value="false" />
                   </div>
 
                   {/* Location and Job Type Row */}
@@ -124,32 +146,17 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                         id="jobType" 
                         name="jobType" 
                         className="select select-bordered focus:select-primary" 
-                        defaultValue={job.jobType}
+                        defaultValue={job.job_type}
                         required
                       >
                         <option value="">Select job type</option>
                         <option value="Full-Time">Full-Time</option>
                         <option value="Part-Time">Part-Time</option>
                         <option value="Contract">Contract</option>
-                        <option value="Internship">Internship</option>
-                        <option value="Freelance">Freelance</option>
                       </select>
                     </div>
                   </div>
 
-                  {/* Salary Range */}
-                  <div className="form-control">
-                    <label className="label" htmlFor="salary">
-                      <span className="label-text font-medium">Salary Range</span>
-                    </label>
-                    <input 
-                      id="salary" 
-                      name="salary" 
-                      type="text" 
-                      defaultValue={job.salary}
-                      className="input input-bordered focus:input-primary" 
-                    />
-                  </div>
 
                   {/* Job Description */}
                   <div className="form-control">
@@ -165,44 +172,6 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                     ></textarea>
                   </div>
 
-                  {/* Requirements */}
-                  <div className="form-control">
-                    <label className="label" htmlFor="requirements">
-                      <span className="label-text font-medium">Requirements</span>
-                    </label>
-                    <textarea 
-                      id="requirements" 
-                      name="requirements" 
-                      defaultValue={job.requirements}
-                      className="textarea textarea-bordered h-32 focus:textarea-primary"
-                    ></textarea>
-                  </div>
-
-                  {/* Benefits */}
-                  <div className="form-control">
-                    <label className="label" htmlFor="benefits">
-                      <span className="label-text font-medium">Benefits & Perks</span>
-                    </label>
-                    <textarea 
-                      id="benefits" 
-                      name="benefits" 
-                      defaultValue={job.benefits}
-                      className="textarea textarea-bordered h-24 focus:textarea-primary"
-                    ></textarea>
-                  </div>
-
-                  {/* Application Instructions */}
-                  <div className="form-control">
-                    <label className="label" htmlFor="applicationInstructions">
-                      <span className="label-text font-medium">How to Apply</span>
-                    </label>
-                    <textarea 
-                      id="applicationInstructions" 
-                      name="applicationInstructions" 
-                      defaultValue={job.applicationInstructions}
-                      className="textarea textarea-bordered h-24 focus:textarea-primary"
-                    ></textarea>
-                  </div>
 
                   {/* Action Buttons */}
                   <div className="flex gap-4 pt-6">
@@ -245,7 +214,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-base-content/70">Posted:</span>
-                    <span className="font-medium">5 days ago</span>
+                    <span className="font-medium">{new Date(job.created_at).toLocaleDateString()}</span>
                   </div>
                 </div>
                 
