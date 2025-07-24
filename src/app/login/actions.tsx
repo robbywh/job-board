@@ -54,7 +54,7 @@ export async function signup(formData: FormData) {
   revalidatePath('/', 'layout')
   
   if (authData.user && !authData.user.email_confirmed_at) {
-    redirect('/auth/confirm-email')
+    return { emailConfirmation: true }
   }
   
   redirect('/dashboard')
