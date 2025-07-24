@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/navbar/Navbar";
 
 export default async function WithNavbarLayout({
   children,

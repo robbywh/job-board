@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from "react";
-import JobCard from "@/components/JobCard";
-import JobFilters, { JobFilters as FilterTypes } from "@/components/JobFilters";
+import JobCard from "@/components/job/JobCard";
+import JobFilters, { JobFilters as FilterTypes } from "@/components/job/JobFilters";
 
 // Mock data for demonstration
 const mockJobs = [

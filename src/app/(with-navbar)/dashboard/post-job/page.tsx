@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { createJob } from "../actions";
 import { validateJobForm } from "@/lib/utils";
-import { FormError, SuccessMessage } from "@/components/ErrorDisplay";
+import { FormError, SuccessMessage } from "@/components/ui/ErrorDisplay";
 
 export default function PostJobPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
