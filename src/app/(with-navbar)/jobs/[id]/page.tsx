@@ -1,8 +1,9 @@
-import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getJobById } from "@/lib/jobs";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import { getBreadcrumbs } from "@/utils/breadcrumbs";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -34,17 +35,17 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
-      <div className="container mx-auto px-4 py-8">
-        <div className="breadcrumbs text-sm mb-6">
-          <ul>
-            <li><Link href="/">Home</Link></li>
-            <li><Link href="/jobs">Jobs</Link></li>
-            <li>{job.title}</li>
-          </ul>
-        </div>
+    <>
+      {/* Breadcrumb */}
+      <Breadcrumb items={getBreadcrumbs.jobDetail(job.title)} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
+        </div>
+        <div className="container mx-auto px-4 py-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
               <div className="card-body">
@@ -131,7 +132,8 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

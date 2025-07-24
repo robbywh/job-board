@@ -1,15 +1,17 @@
+import BreadcrumbSkeleton from "@/components/ui/BreadcrumbSkeleton";
+
 export default function Loading() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
-      <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb Skeleton */}
-        <div className="breadcrumbs text-sm mb-6">
-          <ul>
-            <li><div className="skeleton h-4 w-12"></div></li>
-            <li><div className="skeleton h-4 w-8"></div></li>
-            <li><div className="skeleton h-4 w-20"></div></li>
-          </ul>
+    <>
+      {/* Breadcrumb Skeleton */}
+      <BreadcrumbSkeleton itemCount={3} />
+
+      <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
         </div>
+        <div className="container mx-auto px-4 py-8 relative z-10">
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
@@ -102,7 +104,8 @@ export default function Loading() {
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

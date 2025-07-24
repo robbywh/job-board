@@ -1,7 +1,11 @@
 export default function Loading() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
-      <div className="container mx-auto px-4 py-8">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
+      </div>
+      <div className="container mx-auto px-4 py-8 relative z-10">
         {/* Page Header */}
         <div className="flex justify-between items-center mb-8">
           <div>

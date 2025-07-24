@@ -2,8 +2,12 @@ import PostJobFormClient from "./PostJobFormClient";
 
 export default function PostJobFormServer() {
   return (
-    <div className="min-h-screen bg-base-200/30">
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
+      </div>
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-7xl relative z-10">
         <div className="flex flex-col xl:flex-row gap-4 sm:gap-6">
           <div className="flex-1 xl:max-w-4xl">
             <div className="card bg-base-100 shadow-lg">

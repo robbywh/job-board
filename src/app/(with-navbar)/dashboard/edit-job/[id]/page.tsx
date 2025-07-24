@@ -1,9 +1,10 @@
-import Link from "next/link";
 import Image from "next/image";
 import { updateJob } from "../../actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { getJobByIdWithAuth } from "@/lib/jobs";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import { getBreadcrumbs } from "@/utils/breadcrumbs";
 
 export default async function EditJobPage({ params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient();
@@ -23,28 +24,15 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
   return (
     <>
       {/* Breadcrumb */}
-      <div className="bg-base-100 border-b border-base-200">
-        <div className="container mx-auto px-3 sm:px-4 py-2 sm:py-3">
-          <div className="breadcrumbs text-xs sm:text-sm">
-            <ul>
-              <li>
-                <Link href="/dashboard" className="flex items-center gap-1 sm:gap-2 hover:text-primary transition-colors">
-                  <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v4H8V5z" />
-                  </svg>
-                  <span className="hidden sm:inline">Dashboard</span>
-                  <span className="sm:hidden">Back</span>
-                </Link>
-              </li>
-              <li className="text-primary font-medium">Edit Job</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <Breadcrumb items={getBreadcrumbs.editJob()} />
 
-      <div className="min-h-screen bg-base-200/30">
-        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-7xl">
+      <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-32 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-7xl relative z-10">
           <div className="flex flex-col xl:flex-row gap-4 sm:gap-6">
             <div className="flex-1 xl:max-w-4xl">
               <div className="card bg-base-100 shadow-lg">
