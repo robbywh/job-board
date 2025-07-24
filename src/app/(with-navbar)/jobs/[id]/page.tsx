@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getJobById } from "@/lib/jobs";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import { getBreadcrumbs } from "@/utils/breadcrumbs";
+import { getBreadcrumbs } from "@/lib/breadcrumbs";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;

@@ -26,7 +26,6 @@ export const getBreadcrumbs = {
     },
     {
       label: "Jobs",
-      href: "/jobs",
       icon: JobsIcon,
       isActive: true
     }
@@ -51,7 +50,6 @@ export const getBreadcrumbs = {
   dashboard: (): BreadcrumbItem[] => [
     {
       label: "Dashboard",
-      href: "/dashboard",
       icon: DashboardIcon,
       isActive: true
     }

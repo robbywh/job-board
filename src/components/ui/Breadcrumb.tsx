@@ -19,7 +19,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
           <ul>
             {items.map((item, index) => (
               <li key={index}>
-                {item.href ? (
+                {item.href && !item.isActive ? (
                   <Link 
                     href={item.href} 
                     className="flex items-center gap-1 sm:gap-2 hover:text-primary transition-colors"
@@ -29,9 +29,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
                         {item.icon}
                       </div>
                     )}
-                    <span className={item.isActive ? "text-primary font-medium" : ""}>
-                      {item.label}
-                    </span>
+                    <span>{item.label}</span>
                   </Link>
                 ) : (
                   <span className={`flex items-center gap-1 sm:gap-2 ${item.isActive ? "text-primary font-medium" : ""}`}>

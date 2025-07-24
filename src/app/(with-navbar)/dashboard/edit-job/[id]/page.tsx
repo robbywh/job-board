@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { getJobByIdWithAuth } from "@/lib/jobs";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import { getBreadcrumbs } from "@/utils/breadcrumbs";
+import { getBreadcrumbs } from "@/lib/breadcrumbs";
 
 export default async function EditJobPage({ params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient();

@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import PostJobFormServer from "./PostJobFormServer";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import { getBreadcrumbs } from "@/utils/breadcrumbs";
+import { getBreadcrumbs } from "@/lib/breadcrumbs";
 
 export const metadata = {
   title: "Post a Job | Job Board",

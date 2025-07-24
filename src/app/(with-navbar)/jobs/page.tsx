@@ -4,7 +4,7 @@ import JobsContent from './JobsContent';
 import JobsPageSkeleton from './JobsPageSkeleton';
 import { getJobsWithPagination } from '@/lib/jobs';
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import { getBreadcrumbs } from "@/utils/breadcrumbs";
+import { getBreadcrumbs } from "@/lib/breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Browse Jobs | Job Board",
