@@ -42,17 +42,21 @@ export default function JobsContent({ initialJobs, initialFilters = {} }: JobsCo
     setTimeout(() => {
       let filtered = initialJobs;
 
-      // Search filter
-      if (filters.search) {
+      // Search filter - search in title, company, and description
+      if (filters.search && filters.search.trim()) {
+        const searchTerm = filters.search.toLowerCase().trim();
         filtered = filtered.filter(job => 
-          job.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-          job.company.toLowerCase().includes(filters.search.toLowerCase())
+          job.title.toLowerCase().includes(searchTerm) ||
+          job.company.toLowerCase().includes(searchTerm) ||
+          job.description.toLowerCase().includes(searchTerm)
         );
       }
 
-      // Location filter
-      if (filters.location) {
-        filtered = filtered.filter(job => job.location === filters.location);
+      // Location filter - use includes for partial matching
+      if (filters.location && filters.location.trim()) {
+        filtered = filtered.filter(job => 
+          job.location.toLowerCase().includes(filters.location.toLowerCase())
+        );
       }
 
       // Job type filter

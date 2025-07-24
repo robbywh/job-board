@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { createClient } from "@/utils/supabase/server";
 import JobsContent from './JobsContent';
 import JobsPageSkeleton from './JobsPageSkeleton';
 
@@ -71,8 +70,6 @@ export default async function JobsPage({
 }) {
   // Server-side data fetching
   const jobs = await getMockJobs();
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
   const params = await searchParams;
 
   return (

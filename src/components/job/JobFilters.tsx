@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface JobFiltersProps {
   onFiltersChange?: (filters: JobFilters) => void;
@@ -23,10 +23,21 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
     }
   );
 
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const handleSearchChange = (value: string) => {
     const newFilters = { ...filters, search: value };
     setFilters(newFilters);
-    onFiltersChange?.(newFilters);
+    
+    // Clear previous timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    // Set new timeout for debouncing
+    searchTimeoutRef.current = setTimeout(() => {
+      onFiltersChange?.(newFilters);
+    }, 300);
   };
 
   const handleLocationChange = (value: string) => {
@@ -49,7 +60,21 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
     const newFilters = { search: '', location: '', jobTypes: [] };
     setFilters(newFilters);
     onFiltersChange?.(newFilters);
+    
+    // Clear any pending search timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
   };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
@@ -97,13 +122,16 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
             disabled={isLoading}
           >
             <option value="">All Locations</option>
-            <option value="San Francisco, CA">San Francisco, CA</option>
-            <option value="New York, NY">New York, NY</option>
-            <option value="Seattle, WA">Seattle, WA</option>
+            <option value="San Francisco">San Francisco</option>
+            <option value="New York">New York</option>
+            <option value="Seattle">Seattle</option>
             <option value="Remote">Remote</option>
-            <option value="Los Angeles, CA">Los Angeles, CA</option>
-            <option value="Chicago, IL">Chicago, IL</option>
-            <option value="Austin, TX">Austin, TX</option>
+            <option value="Los Angeles">Los Angeles</option>
+            <option value="Chicago">Chicago</option>
+            <option value="Austin">Austin</option>
+            <option value="CA">California</option>
+            <option value="NY">New York</option>
+            <option value="WA">Washington</option>
           </select>
         </div>
 
@@ -113,13 +141,14 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
             <span className="label-text">Job Type</span>
           </label>
           <div className="space-y-2">
-            {['Full-Time', 'Part-Time', 'Contract', 'Internship', 'Freelance'].map((type) => (
+            {['Full-Time', 'Part-Time', 'Contract'].map((type) => (
               <label key={type} className="label cursor-pointer justify-start">
                 <input 
                   type="checkbox" 
                   className="checkbox checkbox-sm" 
                   checked={filters.jobTypes.includes(type)}
                   onChange={(e) => handleJobTypeChange(type, e.target.checked)}
+                  disabled={isLoading}
                 />
                 <span className="label-text ml-2">{type}</span>
               </label>
@@ -138,7 +167,14 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
                 <div className="badge badge-primary gap-2">
                   Search: {filters.search}
                   <button 
-                    onClick={() => handleSearchChange('')}
+                    onClick={() => {
+                      if (searchTimeoutRef.current) {
+                        clearTimeout(searchTimeoutRef.current);
+                      }
+                      const newFilters = { ...filters, search: '' };
+                      setFilters(newFilters);
+                      onFiltersChange?.(newFilters);
+                    }}
                     className="btn btn-ghost btn-xs p-0"
                   >
                     ×
