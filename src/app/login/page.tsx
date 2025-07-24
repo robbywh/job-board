@@ -1,6 +1,24 @@
+'use client'
+
+import { useState } from 'react'
 import { login, signup } from './actions'
 
 export default function LoginPage() {
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleSubmit = async (formData: FormData, action: typeof login | typeof signup) => {
+    setIsLoading(true)
+    setError(null)
+    
+    const result = await action(formData)
+    
+    if (result?.error) {
+      setError(result.error)
+    }
+    
+    setIsLoading(false)
+  }
   return (
     <div className="min-h-screen hero bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
       {/* Background decoration */}
@@ -49,6 +67,22 @@ export default function LoginPage() {
               <p className="text-sm text-base-content/60">Sign in to your account</p>
             </div>
             
+            {/* Error Alert */}
+            {error && (
+              <div className="alert alert-error mb-4">
+                <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span className="text-sm">{error}</span>
+                <button 
+                  onClick={() => setError(null)}
+                  className="btn btn-sm btn-ghost"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+            
             <form className="space-y-4">
               <div className="form-control">
                 <label className="label" htmlFor="email">
@@ -90,25 +124,46 @@ export default function LoginPage() {
               
               <div className="form-control mt-6 space-y-3">
                 <button 
-                  formAction={login} 
+                  type="submit"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    const form = e.currentTarget.closest('form') as HTMLFormElement
+                    const formData = new FormData(form)
+                    handleSubmit(formData, login)
+                  }}
+                  disabled={isLoading}
                   className="btn btn-primary btn-block group"
                 >
-                  <svg className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                  </svg>
-                  Sign In
+                  {isLoading ? (
+                    <span className="loading loading-spinner loading-sm"></span>
+                  ) : (
+                    <svg className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                    </svg>
+                  )}
+                  {isLoading ? 'Signing In...' : 'Sign In'}
                 </button>
                 
                 <div className="divider text-xs">or</div>
                 
                 <button 
-                  formAction={signup} 
+                  type="button"
+                  onClick={(e) => {
+                    const form = e.currentTarget.closest('form') as HTMLFormElement
+                    const formData = new FormData(form)
+                    handleSubmit(formData, signup)
+                  }}
+                  disabled={isLoading}
                   className="btn btn-outline btn-secondary btn-block group"
                 >
-                  <svg className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-                  </svg>
-                  Create Account
+                  {isLoading ? (
+                    <span className="loading loading-spinner loading-sm"></span>
+                  ) : (
+                    <svg className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                    </svg>
+                  )}
+                  {isLoading ? 'Creating Account...' : 'Create Account'}
                 </button>
               </div>
             </form>
