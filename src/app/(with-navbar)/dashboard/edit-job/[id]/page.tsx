@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { updateJob } from "../../actions";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 // Mock function to get job data
 const getJobById = (id: string) => {
@@ -34,6 +36,14 @@ Key Responsibilities:
 };
 
 export default async function EditJobPage({ params }: { params: Promise<{ id: string }> }) {
+  // Server-side authentication check
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    redirect('/');
+  }
+
   const { id } = await params;
   const job = getJobById(id);
 

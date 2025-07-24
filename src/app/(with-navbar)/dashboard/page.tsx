@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 // Mock user jobs data
 const userJobs = [
@@ -26,7 +28,14 @@ const userJobs = [
   }
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    redirect('/');
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
       <div className="container mx-auto px-4 py-8">
