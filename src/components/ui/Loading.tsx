@@ -18,24 +18,38 @@ export function LoadingCard() {
     <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
       <div className="card-body">
         <div className="flex justify-between items-start">
-          <div className="flex-1 space-y-3">
-            <div className="skeleton h-6 w-3/4"></div>
-            <div className="skeleton h-4 w-1/2"></div>
-            <div className="flex gap-4">
-              <div className="skeleton h-3 w-20"></div>
-              <div className="skeleton h-3 w-16"></div>
+          <div className="flex items-start gap-4 flex-1">
+            {/* Company Logo Skeleton */}
+            <div className="avatar flex-shrink-0">
+              <div className="skeleton w-12 h-12 rounded-lg"></div>
             </div>
-            <div className="space-y-2">
-              <div className="skeleton h-3 w-full"></div>
-              <div className="skeleton h-3 w-5/6"></div>
+            
+            {/* Job Info Skeleton */}
+            <div className="flex-1">
+              <div className="skeleton h-6 w-3/4 mb-2"></div>
+              <div className="skeleton h-4 w-1/2 mb-2"></div>
+              <div className="flex items-center gap-4 mt-2">
+                <div className="flex items-center gap-1">
+                  <div className="skeleton w-4 h-4"></div>
+                  <div className="skeleton h-3 w-20"></div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="skeleton w-4 h-4"></div>
+                  <div className="skeleton h-3 w-16"></div>
+                </div>
+              </div>
+              <div className="mt-3 space-y-2">
+                <div className="skeleton h-3 w-full"></div>
+                <div className="skeleton h-3 w-5/6"></div>
+              </div>
             </div>
           </div>
-          <div className="space-y-2">
+          <div className="flex flex-col items-end gap-2 flex-shrink-0">
             <div className="skeleton h-6 w-16"></div>
             <div className="skeleton h-3 w-12"></div>
           </div>
         </div>
-        <div className="flex justify-end mt-4">
+        <div className="card-actions justify-end mt-4">
           <div className="skeleton h-8 w-24"></div>
         </div>
       </div>
