@@ -112,13 +112,13 @@ export default async function DashboardPage() {
 
         {/* Job Listings Table - Only show if there are jobs */}
         {jobs.length > 0 ? (
-          <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
+          <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg min-h-[600px]">
             <div className="card-body">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="card-title text-2xl">Your Job Postings</h2>
               </div>
 
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto pb-32">
                 <table className="table">
                   <thead>
                     <tr>
@@ -191,14 +191,14 @@ export default async function DashboardPage() {
                         <td className="text-sm">{new Date(job.created_at).toLocaleDateString()}</td>
                         <td>
                           <div className="dropdown dropdown-end">
-                            <label tabIndex={0} className="btn btn-ghost btn-xs">
+                            <div tabIndex={0} role="button" className="btn btn-ghost btn-xs">
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
                               </svg>
-                            </label>
-                            <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-[1]">
-                              <li><Link href={`/jobs/${job.id}`} className="px-4 py-2 text-sm hover:bg-base-200 rounded">View</Link></li>
-                              <li><Link href={`/dashboard/edit-job/${job.id}`} className="px-4 py-2 text-sm hover:bg-base-200 rounded">Edit</Link></li>
+                            </div>
+                            <ul tabIndex={0} className="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-52 z-[9999] border border-base-300">
+                              <li><Link href={`/jobs/${job.id}`} className="hover:bg-base-200">View</Link></li>
+                              <li><Link href={`/dashboard/edit-job/${job.id}`} className="hover:bg-base-200">Edit</Link></li>
                               <li>
                                 <DeleteJobButton jobId={job.id} jobTitle={job.title} />
                               </li>
