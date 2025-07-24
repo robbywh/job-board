@@ -3,41 +3,9 @@ import Image from "next/image";
 import { updateJob } from "../../actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect, notFound } from "next/navigation";
-import { Job, Company } from "@/types/database";
-
-// Extended job type with company data
-type JobWithCompany = Job & {
-  companies: Company;
-};
-
-// Function to get job data from Supabase
-const getJobById = async (id: string, userId: string): Promise<JobWithCompany | null> => {
-  const supabase = await createClient();
-  
-  const { data: job, error } = await supabase
-    .from('jobs')
-    .select(`
-      *,
-      companies (
-        id,
-        name,
-        logo_url
-      )
-    `)
-    .eq('id', id)
-    .eq('user_id', userId) // Ensure user can only edit their own jobs
-    .single();
-
-  if (error) {
-    console.error('Error fetching job:', error);
-    return null;
-  }
-
-  return job as JobWithCompany;
-};
+import { getJobByIdWithAuth } from "@/lib/jobs";
 
 export default async function EditJobPage({ params }: { params: Promise<{ id: string }> }) {
-  // Server-side authentication check
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   
@@ -46,7 +14,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
   }
 
   const { id } = await params;
-  const job = await getJobById(id, user.id);
+  const job = await getJobByIdWithAuth(id, user.id);
   
   if (!job) {
     notFound();
@@ -55,7 +23,6 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
       <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
         <div className="breadcrumbs text-sm mb-6">
           <ul>
             <li><Link href="/">Home</Link></li>
@@ -65,14 +32,12 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Form */}
           <div className="lg:col-span-2">
             <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
               <div className="card-body">
                 <h1 className="text-3xl font-bold mb-6">Edit Job Posting</h1>
                 
                 <form action={updateJob.bind(null, id)} className="space-y-6">
-                  {/* Job Title */}
                   <div className="form-control">
                     <label className="label" htmlFor="title">
                       <span className="label-text font-medium">Job Title *</span>
@@ -87,7 +52,6 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                     />
                   </div>
 
-                  {/* Company Display - Read Only */}
                   <div className="form-control">
                     <label className="label">
                       <span className="label-text font-medium">Company *</span>
@@ -117,12 +81,10 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                         <div className="text-sm text-base-content/60">Company cannot be changed when editing</div>
                       </div>
                     </div>
-                    {/* Hidden inputs for form submission */}
                     <input type="hidden" name="companyId" value={job.company_id} />
                     <input type="hidden" name="isNewCompany" value="false" />
                   </div>
 
-                  {/* Location and Job Type Row */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="form-control">
                       <label className="label" htmlFor="location">
@@ -157,8 +119,6 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                     </div>
                   </div>
 
-
-                  {/* Job Description */}
                   <div className="form-control">
                     <label className="label" htmlFor="description">
                       <span className="label-text font-medium">Job Description *</span>
@@ -172,8 +132,6 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                     ></textarea>
                   </div>
 
-
-                  {/* Action Buttons */}
                   <div className="flex gap-4 pt-6">
                     <button type="submit" className="btn btn-primary flex-1">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -193,9 +151,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
             </div>
           </div>
 
-          {/* Sidebar */}
           <div className="lg:col-span-1">
-            {/* Job Status */}
             <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg mb-6">
               <div className="card-body">
                 <h3 className="card-title text-lg mb-4">Job Status</h3>
@@ -231,7 +187,6 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
-            {/* Analytics */}
             <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg mb-6">
               <div className="card-body">
                 <h3 className="card-title text-lg mb-4">Performance</h3>

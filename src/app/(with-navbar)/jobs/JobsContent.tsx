@@ -131,7 +131,6 @@ export default function JobsContent({
 
   return (
     <div className="flex flex-col lg:flex-row gap-8">
-      {/* Filters Sidebar */}
       <div className="lg:w-1/4">
         <JobFilters 
           onFiltersChange={handleFiltersChange} 
@@ -140,7 +139,6 @@ export default function JobsContent({
         />
       </div>
 
-      {/* Job Listings */}
       <div className="lg:w-3/4">
         <div className="flex justify-between items-center mb-6">
           <p className="text-base-content/70">
@@ -150,13 +148,11 @@ export default function JobsContent({
             <option>Sort by: Newest</option>
             <option>Sort by: Oldest</option>
             <option>Sort by: Company</option>
-            <option>Sort by: Salary</option>
           </select>
         </div>
 
         <div className="space-y-4">
           {isFiltering ? (
-            // Show skeleton cards while filtering
             [1, 2, 3].map(i => <LoadingCard key={i} />)
           ) : (
             filteredJobs.map((job) => (
@@ -183,7 +179,6 @@ export default function JobsContent({
           </div>
         )}
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex justify-center mt-8">
             <div className="join">
@@ -195,7 +190,6 @@ export default function JobsContent({
                 «
               </button>
               
-              {/* Show page numbers */}
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 let pageNum;
                 if (totalPages <= 5) {

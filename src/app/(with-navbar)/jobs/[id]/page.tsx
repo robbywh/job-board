@@ -2,67 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { createClient } from "@/utils/supabase/server";
-import JobApplicationForm from "./JobApplicationForm";
-
-interface JobData {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  type: string;
-  salary?: string;
-  description: string;
-  postedAt: string;
-  companyLogo?: string | null;
-  companyInfo: {
-    size: string;
-    industry: string;
-    website: string;
-  };
-}
-
-// Fetch job data from Supabase
-const getJobById = async (id: string): Promise<JobData | null> => {
-  const supabase = await createClient();
-  
-  const { data: job, error } = await supabase
-    .from('jobs')
-    .select(`
-      *,
-      companies (
-        id,
-        name,
-        logo_url
-      )
-    `)
-    .eq('id', id)
-    .eq('status', 'active')
-    .single();
-
-  if (error) {
-    console.error('Error fetching job:', error);
-    return null;
-  }
-
-  // Transform the data to match the expected format
-  return {
-    id: job.id,
-    title: job.title,
-    company: job.companies?.name || 'Unknown Company',
-    location: job.location,
-    type: job.type,
-    salary: undefined, // Not stored in database
-    description: job.description,
-    postedAt: job.created_at,
-    companyLogo: job.companies?.logo_url || null,
-    companyInfo: {
-      size: '1-50 employees', // Default value since not stored in DB
-      industry: 'Technology', // Default value since not stored in DB
-      website: '#' // Default value since not stored in DB
-    }
-  };
-};
+import { getJobById } from "@/lib/jobs";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -76,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   return {
     title: `${job.title} at ${job.company} | Job Board`,
-    description: `${job.title} position at ${job.company} in ${job.location}. ${job.type} role with competitive salary.`,
+    description: `${job.title} position at ${job.company} in ${job.location}. ${job.type} role available now.`,
     openGraph: {
       title: `${job.title} at ${job.company}`,
       description: `${job.type} position in ${job.location}`,
@@ -96,7 +36,6 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
       <div className="container mx-auto px-4 py-8">
-        {/* Breadcrumb */}
         <div className="breadcrumbs text-sm mb-6">
           <ul>
             <li><Link href="/">Home</Link></li>
@@ -106,14 +45,12 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
           <div className="lg:col-span-2">
             <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
               <div className="card-body">
                 <div className="flex justify-between items-start mb-6">
                   <div className="flex-1">
                     <div className="flex items-center gap-4 mb-4">
-                      {/* Company Logo */}
                       <div className="avatar">
                         <div className="w-16 h-16 rounded-lg bg-base-200 flex items-center justify-center">
                           {job.companyLogo ? (
@@ -152,14 +89,6 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                         </svg>
                         {job.type}
                       </div>
-                      {job.salary && (
-                        <div className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                          </svg>
-                          {job.salary}
-                        </div>
-                      )}
                     </div>
                   </div>
                   <div className={`badge badge-lg ${
@@ -182,9 +111,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             </div>
           </div>
 
-          {/* Sidebar */}
           <div className="lg:col-span-1">
-            {/* Apply Section */}
             <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg mb-6">
               <div className="card-body">
                 <h3 className="card-title text-lg mb-4">Apply for this job</h3>

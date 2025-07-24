@@ -1,14 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { Job, Company } from "@/types/database";
+import { getUserJobs } from "@/lib/jobs";
 import JobsTable from "./JobsTable";
-
-// Extended job type with company data
-type JobWithCompany = Job & {
-  companies: Company;
-};
-
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -19,24 +13,7 @@ export default async function DashboardPage() {
   }
 
   // Fetch user's jobs with company data
-  const { data: userJobs, error } = await supabase
-    .from('jobs')
-    .select(`
-      *,
-      companies (
-        id,
-        name,
-        logo_url
-      )
-    `)
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching jobs:', error);
-  }
-
-  const jobs = (userJobs || []) as JobWithCompany[];
+  const jobs = await getUserJobs(user.id);
   
   // Calculate stats
   const activeJobs = jobs.length;
