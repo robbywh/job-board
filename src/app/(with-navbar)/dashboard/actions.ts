@@ -31,18 +31,6 @@ export async function createJob(prevState: FormState, formData: FormData): Promi
     const selectedCompanyId = formData.get('selectedCompanyId') as string
     const logoUrl = formData.get('logoUrl') as string
 
-    // Debug logging
-    console.log('Form data:', {
-      title,
-      description,
-      location,
-      jobType,
-      companyName,
-      isNewCompany,
-      selectedCompanyId,
-      logoUrl,
-      userId: user.id
-    })
 
     // Validation
     const errors: Record<string, string[]> = {}
@@ -157,6 +145,12 @@ export async function createJob(prevState: FormState, formData: FormData): Promi
     redirect('/dashboard')
 
   } catch (error) {
+    // Don't catch redirect errors
+    if (error && typeof error === 'object' && 'digest' in error && 
+        typeof error.digest === 'string' && error.digest.includes('NEXT_REDIRECT')) {
+      throw error
+    }
+    
     console.error('Unexpected error in createJob:', error)
     return {
       success: false,
@@ -174,6 +168,29 @@ export async function updateJob(jobId: string, formData: FormData) {
   
   if (!user) {
     redirect('/')
+  }
+
+  // Ensure user exists in users table
+  const { data: existingUser, error: userCheckError } = await supabase
+    .from('users')
+    .select('id')
+    .eq('id', user.id)
+    .single()
+
+  if (userCheckError && userCheckError.code === 'PGRST116') {
+    // User doesn't exist, create user record
+    const { error: createUserError } = await supabase
+      .from('users')
+      .insert({
+        id: user.id,
+        email: user.email || ''
+      })
+
+    if (createUserError) {
+      throw new Error(`Failed to create user record: ${createUserError.message}`)
+    }
+  } else if (userCheckError) {
+    throw new Error(`User verification failed: ${userCheckError.message}`)
   }
 
   const companyName = formData.get('company') as string
