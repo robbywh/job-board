@@ -11,7 +11,7 @@ export async function createJob(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   
   if (!user) {
-    redirect('/login')
+    redirect('/')
   }
 
   const jobData = {
@@ -43,7 +43,7 @@ export async function updateJob(jobId: string, formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   
   if (!user) {
-    redirect('/login')
+    redirect('/')
   }
 
   const jobData = {
@@ -74,7 +74,7 @@ export async function deleteJob(jobId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   
   if (!user) {
-    redirect('/login')
+    redirect('/')
   }
 
   // In a real app, you would delete this from your database
@@ -92,7 +92,7 @@ export async function toggleJobStatus(jobId: string, status: 'active' | 'paused'
   const { data: { user } } = await supabase.auth.getUser()
   
   if (!user) {
-    redirect('/login')
+    redirect('/')
   }
 
   // In a real app, you would update this in your database

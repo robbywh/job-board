@@ -86,7 +86,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             <Link href="/dashboard" className="btn btn-ghost btn-sm">
               Dashboard
             </Link>
-            <Link href="/login" className="btn btn-primary btn-sm">
+            <Link href="/" className="btn btn-primary btn-sm">
               Sign In
             </Link>
           </div>
