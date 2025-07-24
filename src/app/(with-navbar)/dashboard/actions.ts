@@ -127,7 +127,7 @@ export async function createJob(prevState: FormState, formData: FormData): Promi
         title,
         description,
         location,
-        job_type: jobType as 'Full-Time' | 'Part-Time' | 'Contract',
+        type: jobType as 'Full-Time' | 'Part-Time' | 'Contract',
         user_id: user.id,
         company_id: company.id
       })
@@ -257,7 +257,7 @@ export async function updateJob(jobId: string, formData: FormData) {
       title: formData.get('title') as string,
       description: formData.get('description') as string,
       location: formData.get('location') as string,
-      job_type: formData.get('jobType') as 'Full-Time' | 'Part-Time' | 'Contract',
+      type: formData.get('jobType') as 'Full-Time' | 'Part-Time' | 'Contract',
       company_id: company.id
     })
     .eq('id', jobId)

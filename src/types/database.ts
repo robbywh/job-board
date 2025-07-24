@@ -46,7 +46,8 @@ export interface Database {
           title: string
           description: string
           location: string
-          job_type: 'Full-Time' | 'Part-Time' | 'Contract'
+          type: 'Full-Time' | 'Part-Time' | 'Contract'
+          status: 'active' | 'inactive'
           created_at: string // timestamptz
         }
         Insert: {
@@ -56,7 +57,8 @@ export interface Database {
           title: string
           description: string
           location: string
-          job_type: 'Full-Time' | 'Part-Time' | 'Contract'
+          type: 'Full-Time' | 'Part-Time' | 'Contract'
+          status?: 'active' | 'inactive'
           created_at?: string
         }
         Update: {
@@ -66,7 +68,8 @@ export interface Database {
           title?: string
           description?: string
           location?: string
-          job_type?: 'Full-Time' | 'Part-Time' | 'Contract'
+          type?: 'Full-Time' | 'Part-Time' | 'Contract'
+          status?: 'active' | 'inactive'
           created_at?: string
         }
       }

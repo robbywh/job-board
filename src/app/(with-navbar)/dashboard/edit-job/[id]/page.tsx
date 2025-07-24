@@ -146,7 +146,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                         id="jobType" 
                         name="jobType" 
                         className="select select-bordered focus:select-primary" 
-                        defaultValue={job.job_type}
+                        defaultValue={job.type}
                         required
                       >
                         <option value="">Select job type</option>

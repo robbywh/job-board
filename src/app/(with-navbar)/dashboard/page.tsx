@@ -116,6 +116,13 @@ export default async function DashboardPage() {
             <div className="card-body">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="card-title text-2xl">Your Job Postings</h2>
+                <div className="flex gap-2">
+                  <select className="select select-bordered select-sm">
+                    <option>All Status</option>
+                    <option>Active</option>
+                    <option>Inactive</option>
+                  </select>
+                </div>
               </div>
 
               <div className="overflow-x-auto pb-32">
@@ -125,6 +132,7 @@ export default async function DashboardPage() {
                       <th>Job Title</th>
                       <th>Location</th>
                       <th>Type</th>
+                      <th>Status</th>
                       <th>Applications</th>
                       <th>Views</th>
                       <th>Posted</th>
@@ -164,11 +172,18 @@ export default async function DashboardPage() {
                         <td>{job.location}</td>
                         <td>
                           <div className={`badge ${
-                            job.job_type === 'Full-Time' ? 'badge-primary' : 
-                            job.job_type === 'Part-Time' ? 'badge-secondary' : 
+                            job.type === 'Full-Time' ? 'badge-primary' : 
+                            job.type === 'Part-Time' ? 'badge-secondary' : 
                             'badge-accent'
                           } badge-sm`}>
-                            {job.job_type}
+                            {job.type}
+                          </div>
+                        </td>
+                        <td>
+                          <div className={`badge ${
+                            job.status === 'active' ? 'badge-success' : 'badge-error'
+                          } badge-sm`}>
+                            {job.status}
                           </div>
                         </td>
                         <td>
