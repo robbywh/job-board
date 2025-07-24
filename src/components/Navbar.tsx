@@ -1,25 +1,13 @@
 'use client'
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { User } from "@supabase/supabase-js";
 
 interface NavbarProps {
-  user?: {
-    email: string;
-  } | null;
+  user?: User | null;
 }
 
 export default function Navbar({ user }: NavbarProps) {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <div className={`navbar transition-all duration-300 sticky top-0 z-50 bg-base-100/90 backdrop-blur-sm shadow-sm px-5`}>
       <div className="navbar-start">
@@ -35,19 +23,42 @@ export default function Navbar({ user }: NavbarProps) {
         </div>
       </div>
       
+      <div className="navbar-center">
+        <ul className="menu menu-horizontal px-1 hidden md:flex">
+          <li>
+            <Link 
+              href="/jobs" 
+              className="relative transition-all duration-300 hover:text-primary"
+            >
+              Browse Jobs
+            </Link>
+          </li>
+          {user && (
+            <li>
+              <Link 
+                href="/dashboard" 
+                className="relative transition-all duration-300 hover:text-primary"
+              >
+                Dashboard
+              </Link>
+            </li>
+          )}
+        </ul>
+      </div>
+      
       <div className="navbar-end">
         {user ? (
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar group hover:bg-primary/10 transition-all duration-300">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl">
                 <span className="text-white text-sm font-bold">
-                  {user.email?.[0]?.toUpperCase() || 'U'}
+                  {user?.email?.[0]?.toUpperCase() || 'U'}
                 </span>
               </div>
             </label>
             <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-xl bg-base-100 rounded-box w-56 border border-base-300 animate-in slide-in-from-top-2 duration-300">
               <li className="menu-title mb-2">
-                <span className="text-primary font-semibold">{user.email}</span>
+                <span className="text-primary font-semibold">{user?.email}</span>
               </li>
               <li>
                 <Link href="/dashboard" className="flex items-center gap-2 hover:bg-primary/10 hover:text-primary transition-colors duration-200">
@@ -96,7 +107,7 @@ export default function Navbar({ user }: NavbarProps) {
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <Link href="/" className="btn btn-primary btn-sm shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-r from-primary to-secondary border-none">
+            <Link href="/login" className="btn btn-primary btn-sm shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 bg-gradient-to-r from-primary to-secondary border-none">
               <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
               </svg>
