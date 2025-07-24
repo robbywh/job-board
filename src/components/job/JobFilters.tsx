@@ -5,6 +5,7 @@ import { useState } from "react";
 interface JobFiltersProps {
   onFiltersChange?: (filters: JobFilters) => void;
   initialFilters?: JobFilters;
+  isLoading?: boolean;
 }
 
 export interface JobFilters {
@@ -13,7 +14,7 @@ export interface JobFilters {
   jobTypes: string[];
 }
 
-export default function JobFilters({ onFiltersChange, initialFilters }: JobFiltersProps) {
+export default function JobFilters({ onFiltersChange, initialFilters, isLoading = false }: JobFiltersProps) {
   const [filters, setFilters] = useState<JobFilters>(
     initialFilters || {
       search: '',
@@ -54,10 +55,16 @@ export default function JobFilters({ onFiltersChange, initialFilters }: JobFilte
     <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
       <div className="card-body">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="card-title">Filters</h2>
+          <h2 className="card-title flex items-center">
+            Filters
+            {isLoading && (
+              <span className="loading loading-spinner loading-xs ml-2"></span>
+            )}
+          </h2>
           <button 
             onClick={clearFilters}
             className="btn btn-ghost btn-xs"
+            disabled={isLoading}
           >
             Clear All
           </button>
@@ -74,6 +81,7 @@ export default function JobFilters({ onFiltersChange, initialFilters }: JobFilte
             className="input input-bordered input-sm" 
             value={filters.search}
             onChange={(e) => handleSearchChange(e.target.value)}
+            disabled={isLoading}
           />
         </div>
 
@@ -86,6 +94,7 @@ export default function JobFilters({ onFiltersChange, initialFilters }: JobFilte
             className="select select-bordered select-sm"
             value={filters.location}
             onChange={(e) => handleLocationChange(e.target.value)}
+            disabled={isLoading}
           >
             <option value="">All Locations</option>
             <option value="San Francisco, CA">San Francisco, CA</option>

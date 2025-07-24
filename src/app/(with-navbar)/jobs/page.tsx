@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { createClient } from "@/utils/supabase/server";
-import JobsContent from "./JobsContent";
-import Loading from "@/components/ui/Loading";
+import JobsContent from './JobsContent';
+import JobsPageSkeleton from './JobsPageSkeleton';
 
 export const metadata: Metadata = {
   title: "Browse Jobs | Job Board",
@@ -86,7 +86,7 @@ export default async function JobsPage({
           </p>
         </div>
 
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<JobsPageSkeleton />}>
           <JobsContent 
             initialJobs={jobs} 
             initialFilters={{

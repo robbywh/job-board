@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import JobCard from "@/components/job/JobCard";
 import JobFilters, { JobFilters as FilterTypes } from "@/components/job/JobFilters";
+import { LoadingCard } from "@/components/ui/Loading";
 
 interface Job {
   id: number;
@@ -26,6 +27,7 @@ interface JobsContentProps {
 
 export default function JobsContent({ initialJobs, initialFilters = {} }: JobsContentProps) {
   const [filteredJobs, setFilteredJobs] = useState(initialJobs);
+  const [isFiltering, setIsFiltering] = useState(false);
   const [currentFilters, setCurrentFilters] = useState<FilterTypes>({
     search: initialFilters.search || '',
     location: initialFilters.location || '',
@@ -33,28 +35,34 @@ export default function JobsContent({ initialJobs, initialFilters = {} }: JobsCo
   });
 
   const handleFiltersChange = (filters: FilterTypes) => {
+    setIsFiltering(true);
     setCurrentFilters(filters);
-    let filtered = initialJobs;
+    
+    // Simulate filter processing delay
+    setTimeout(() => {
+      let filtered = initialJobs;
 
-    // Search filter
-    if (filters.search) {
-      filtered = filtered.filter(job => 
-        job.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-        job.company.toLowerCase().includes(filters.search.toLowerCase())
-      );
-    }
+      // Search filter
+      if (filters.search) {
+        filtered = filtered.filter(job => 
+          job.title.toLowerCase().includes(filters.search.toLowerCase()) ||
+          job.company.toLowerCase().includes(filters.search.toLowerCase())
+        );
+      }
 
-    // Location filter
-    if (filters.location) {
-      filtered = filtered.filter(job => job.location === filters.location);
-    }
+      // Location filter
+      if (filters.location) {
+        filtered = filtered.filter(job => job.location === filters.location);
+      }
 
-    // Job type filter
-    if (filters.jobTypes.length > 0) {
-      filtered = filtered.filter(job => filters.jobTypes.includes(job.type));
-    }
+      // Job type filter
+      if (filters.jobTypes.length > 0) {
+        filtered = filtered.filter(job => filters.jobTypes.includes(job.type));
+      }
 
-    setFilteredJobs(filtered);
+      setFilteredJobs(filtered);
+      setIsFiltering(false);
+    }, 300);
   };
 
   // Apply initial filters on mount
@@ -72,6 +80,7 @@ export default function JobsContent({ initialJobs, initialFilters = {} }: JobsCo
         <JobFilters 
           onFiltersChange={handleFiltersChange} 
           initialFilters={currentFilters}
+          isLoading={isFiltering}
         />
       </div>
 
@@ -90,9 +99,14 @@ export default function JobsContent({ initialJobs, initialFilters = {} }: JobsCo
         </div>
 
         <div className="space-y-4">
-          {filteredJobs.map((job) => (
-            <JobCard key={job.id} job={job} />
-          ))}
+          {isFiltering ? (
+            // Show skeleton cards while filtering
+            [1, 2, 3].map(i => <LoadingCard key={i} />)
+          ) : (
+            filteredJobs.map((job) => (
+              <JobCard key={job.id} job={job} />
+            ))
+          )}
         </div>
 
         {filteredJobs.length === 0 && (

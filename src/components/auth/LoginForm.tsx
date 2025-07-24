@@ -1,12 +1,22 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { login, signup } from '@/app/login/actions'
+import LoginFormSkeleton from './LoginFormSkeleton'
 
 export default function LoginForm() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [showEmailConfirmModal, setShowEmailConfirmModal] = useState(false)
+  const [isInitializing, setIsInitializing] = useState(true)
+
+  // Simulate form initialization
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitializing(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = async (formData: FormData, action: typeof login | typeof signup) => {
     setIsLoading(true)
@@ -21,6 +31,10 @@ export default function LoginForm() {
     }
     
     setIsLoading(false)
+  }
+
+  if (isInitializing) {
+    return <LoginFormSkeleton />;
   }
 
   return (

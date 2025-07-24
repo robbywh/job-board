@@ -1,14 +1,24 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createJob } from "../actions";
 import { validateJobForm } from "@/lib/utils";
 import { FormError, SuccessMessage } from "@/components/ui/ErrorDisplay";
+import PostJobSkeleton from "./PostJobSkeleton";
 
 export default function PostJobForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [success, setSuccess] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate form loading/initialization
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
@@ -43,6 +53,10 @@ export default function PostJobForm() {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return <PostJobSkeleton />;
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

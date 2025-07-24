@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import JobApplicationSkeleton from "./JobApplicationSkeleton";
 
 interface JobApplicationFormProps {
   jobId: number;
@@ -11,6 +12,15 @@ interface JobApplicationFormProps {
 export default function JobApplicationForm({ jobId, jobTitle, company }: JobApplicationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate loading form data
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [jobId]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,6 +32,10 @@ export default function JobApplicationForm({ jobId, jobTitle, company }: JobAppl
     setSubmitted(true);
     setIsSubmitting(false);
   };
+
+  if (isLoading) {
+    return <JobApplicationSkeleton />;
+  }
 
   if (submitted) {
     return (

@@ -4,7 +4,10 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 // Mock function to get job data
-const getJobById = (id: string) => {
+const getJobById = async (id: string) => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 800));
+  
   // This would normally fetch from your database
   return {
     id: parseInt(id),
@@ -45,7 +48,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
   }
 
   const { id } = await params;
-  const job = getJobById(id);
+  const job = await getJobById(id);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
