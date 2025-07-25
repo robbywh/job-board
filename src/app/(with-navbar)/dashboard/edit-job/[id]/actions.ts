@@ -46,7 +46,7 @@ export async function updateJob(prevState: FormState, formData: FormData): Promi
     // Verify job ownership
     const { data: job, error: fetchError } = await supabase
       .from('jobs')
-      .select('posted_by')
+      .select('user_id')
       .eq('id', jobId)
       .single()
 
@@ -58,7 +58,7 @@ export async function updateJob(prevState: FormState, formData: FormData): Promi
       }
     }
 
-    if (job.posted_by !== user.id) {
+    if (job.user_id !== user.id) {
       return {
         success: false,
         error: 'You can only edit your own job postings.',

@@ -16,7 +16,7 @@ export async function deleteJob(jobId: string): Promise<{ success: boolean; erro
     // Verify job ownership
     const { data: job, error: fetchError } = await supabase
       .from('jobs')
-      .select('posted_by')
+      .select('user_id')
       .eq('id', jobId)
       .single()
 
@@ -24,7 +24,7 @@ export async function deleteJob(jobId: string): Promise<{ success: boolean; erro
       return { success: false, error: 'Job not found.' }
     }
 
-    if (job.posted_by !== user.id) {
+    if (job.user_id !== user.id) {
       return { success: false, error: 'You can only delete your own job postings.' }
     }
 
@@ -63,7 +63,7 @@ export async function toggleJobStatus(jobId: string, newStatus: 'active' | 'inac
     // Verify job ownership
     const { data: job, error: fetchError } = await supabase
       .from('jobs')
-      .select('posted_by')
+      .select('user_id')
       .eq('id', jobId)
       .single()
 
@@ -71,7 +71,7 @@ export async function toggleJobStatus(jobId: string, newStatus: 'active' | 'inac
       return { success: false, error: 'Job not found.' }
     }
 
-    if (job.posted_by !== user.id) {
+    if (job.user_id !== user.id) {
       return { success: false, error: 'You can only modify your own job postings.' }
     }
 

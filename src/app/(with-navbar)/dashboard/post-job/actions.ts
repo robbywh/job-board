@@ -124,7 +124,7 @@ export async function createJob(prevState: FormState, formData: FormData): Promi
         company_id: company.id,
         location,
         type: jobType,
-        posted_by: user.id,
+        user_id: user.id,
       })
 
     if (jobError) {
