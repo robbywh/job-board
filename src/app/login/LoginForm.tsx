@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { XCircle, AtSign, Lock, LogIn, UserPlus, Mail, Info } from 'lucide-react'
 import { login, signup } from '@/app/login/actions'
 
 export default function LoginForm() {
@@ -42,9 +43,7 @@ export default function LoginForm() {
                 : 'opacity-0 -translate-y-2 scale-95'
             }`}>
               <div className="alert alert-error">
-                <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+                <XCircle className="stroke-current shrink-0 h-6 w-6" />
                 <span className="text-sm">{error}</span>
                 <button 
                   onClick={() => setError(null)}
@@ -60,9 +59,7 @@ export default function LoginForm() {
             <div className="form-control">
               <label className="label" htmlFor="email">
                 <span className="label-text font-medium flex items-center">
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
-                  </svg>
+                  <AtSign className="w-4 h-4 mr-2" />
                   Email
                 </span>
               </label>
@@ -79,9 +76,7 @@ export default function LoginForm() {
             <div className="form-control">
               <label className="label" htmlFor="password">
                 <span className="label-text font-medium flex items-center">
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                  </svg>
+                  <Lock className="w-4 h-4 mr-2" />
                   Password
                 </span>
               </label>
@@ -110,9 +105,7 @@ export default function LoginForm() {
                 {isLoading ? (
                   <span className="loading loading-spinner loading-sm"></span>
                 ) : (
-                  <svg className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                  </svg>
+                  <LogIn className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                 )}
                 {isLoading ? 'Signing In...' : 'Sign In'}
               </button>
@@ -132,9 +125,7 @@ export default function LoginForm() {
                 {isLoading ? (
                   <span className="loading loading-spinner loading-sm"></span>
                 ) : (
-                  <svg className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-                  </svg>
+                  <UserPlus className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                 )}
                 {isLoading ? 'Creating Account...' : 'Create Account'}
               </button>
@@ -156,9 +147,7 @@ export default function LoginForm() {
         <div className="modal-box max-w-md">
           <div className="text-center">
             <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-primary-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-              </svg>
+              <Mail className="w-8 h-8 text-primary-content" />
             </div>
             <h3 className="font-bold text-xl mb-2">Check Your Email</h3>
             <p className="text-base-content/70 mb-6">
@@ -166,9 +155,7 @@ export default function LoginForm() {
             </p>
             
             <div className="alert alert-info mb-4">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"></path>
-              </svg>
+              <Info className="w-5 h-5" />
               <div className="text-sm">
                 Don&apos;t forget to check your spam folder if you don&apos;t see the email.
               </div>

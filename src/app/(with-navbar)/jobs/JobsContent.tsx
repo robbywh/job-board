@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Search } from 'lucide-react';
 import JobCard from "@/components/job/JobCard";
 import JobFilters, { JobFilters as FilterTypes } from "@/components/job/JobFilters";
 import { LoadingCard } from "@/components/ui/Loading";
@@ -191,9 +192,7 @@ export default function JobsContent({
         {filteredJobs.length === 0 && (
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-base-300 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
+              <Search className="w-8 h-8 text-base-content/40" />
             </div>
             <h3 className="text-lg font-semibold mb-2">No jobs found</h3>
             <p className="text-base-content/60 mb-4">Try adjusting your filters to see more results</p>

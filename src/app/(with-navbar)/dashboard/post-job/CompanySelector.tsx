@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { Search, Building2, Plus, Zap, ImageIcon, Info } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { Company } from '@/types/database';
 
@@ -124,9 +125,9 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
         return;
       }
       
-      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'];
+      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml'];
       if (!allowedTypes.includes(file.type)) {
-        alert('Logo must be a PNG, JPG, or SVG file');
+        alert('Logo must be a PNG, JPG, WebP, or SVG file');
         return;
       }
 
@@ -192,9 +193,7 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
           />
           
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-            <svg className="w-4 h-4 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <Search className="w-4 h-4 text-base-content/40" />
           </div>
           
           {showDropdown && (filteredCompanies.length > 0 || searchTerm.trim()) && (
@@ -217,9 +216,7 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-base-content/60">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                          </svg>
+                          <Building2 className="w-4 h-4" />
                         </div>
                       )}
                     </div>
@@ -237,9 +234,7 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
                 >
                   <div className="avatar flex-shrink-0">
                     <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                      </svg>
+                      <Plus className="w-4 h-4 text-primary" />
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -255,9 +250,7 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
         {isNewCompany && searchTerm && (
           <div className="mt-2">
             <span className="label-text-alt text-info flex items-center gap-1">
-              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+              <Zap className="w-3 h-3" />
               Creating new company: &quot;{searchTerm}&quot;
             </span>
           </div>
@@ -266,25 +259,24 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
 
       <div className="form-control">
         <div className="mb-2">
-          <label className="label-text font-medium mr-2">Company Logo</label>
-          <span className="label-text-alt text-base-content/60 text-xs">Optional • PNG, JPG, SVG • Max 2MB</span>
+          <label className="label-text font-medium mr-2">Company Logo <span className="text-error">*</span></label>
+          <span className="label-text-alt text-base-content/60 text-xs">PNG, JPG, WebP, SVG • Max 2MB</span>
         </div>
         
         <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
           <div className="avatar self-center sm:self-start">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-base-200 flex items-center justify-center flex-shrink-0">
+            <div className="w-16 h-16 rounded-lg bg-base-200 flex items-center justify-center flex-shrink-0">
               {logoPreview ? (
                 <Image 
                   src={logoPreview} 
                   alt="Company logo preview" 
                   width={64}
                   height={64}
+                  style={{ width: '64px', height: '64px' }}
                   className="object-cover rounded-lg" 
                 />
               ) : (
-                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+                <ImageIcon className="w-6 h-6 text-base-content/40" />
               )}
             </div>
           </div>
@@ -292,9 +284,10 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
           <div className="flex-1 w-full sm:w-auto">
             <input 
               type="file" 
-              accept=".png,.jpg,.jpeg,.svg"
+              accept=".png,.jpg,.jpeg,.webp,.svg"
               onChange={handleLogoChange}
               className="file-input file-input-bordered file-input-sm w-full text-sm"
+              required
               disabled={disabled || isUploading}
               name="logo"
             />
@@ -311,9 +304,7 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
             {!isNewCompany && selectedCompany && (
               <div className="mt-2">
                 <div className="alert alert-info py-2 px-3">
-                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <Info className="w-4 h-4 flex-shrink-0" />
                   <span className="text-xs">Upload a new logo to update the company logo</span>
                 </div>
               </div>

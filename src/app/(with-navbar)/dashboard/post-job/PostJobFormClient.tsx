@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import { Plus, CheckCircle, AlertCircle } from 'lucide-react';
 import { createJob } from '../actions';
 import CompanySelector from './CompanySelector';
 
@@ -28,9 +29,7 @@ function SubmitButton({ isLogoUploading }: { isLogoUploading: boolean }) {
         </>
       ) : (
         <>
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
+          <Plus className="w-5 h-5" />
           Post Job
         </>
       )}
@@ -56,18 +55,14 @@ export default function PostJobFormClient() {
     <>
       {state.success && (
         <div className="alert alert-success mb-4">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <CheckCircle className="w-5 h-5" />
           <span>Job posted successfully!</span>
         </div>
       )}
 
       {state.error && (
         <div className="alert alert-error mb-4">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <AlertCircle className="w-5 h-5" />
           <span>{state.error}</span>
         </div>
       )}

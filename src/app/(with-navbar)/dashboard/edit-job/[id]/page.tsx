@@ -1,6 +1,7 @@
 import { updateJob } from "../../actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect, notFound } from "next/navigation";
+import { CheckCircle } from 'lucide-react';
 import { getJobByIdWithAuth } from "@/lib/jobs";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { getBreadcrumbs } from "@/lib/breadcrumbs";
@@ -60,9 +61,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                 <div className="collapse collapse-arrow bg-base-100 shadow-lg">
                   <input type="checkbox" /> 
                   <div className="collapse-title text-lg font-medium flex items-center gap-2">
-                    <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <CheckCircle className="w-4 h-4 text-primary" />
                     Job Status & Actions
                   </div>
                   <div className="collapse-content">
