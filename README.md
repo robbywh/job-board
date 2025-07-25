@@ -67,63 +67,22 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ### 4. Database Setup
 
-Create the following tables in your Supabase database:
+Set up your Supabase database with the following schema. Execute these SQL commands in your Supabase SQL Editor:
 
-#### Users Table
+#### Step 1: Create Custom Types and Tables
 
 ```sql
--- Create users table
+-- Custom types for jobs
+CREATE TYPE job_type AS ENUM ('Full-Time', 'Part-Time', 'Contract');
+CREATE TYPE job_status AS ENUM ('active', 'inactive');
+
+-- Users table (extends Supabase auth.users)
 CREATE TABLE IF NOT EXISTS public.users (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     email VARCHAR NOT NULL UNIQUE
 );
 
--- Enable Row Level Security
-ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
-
--- Create policies
-CREATE POLICY "Users can view own profile" ON public.users
-  FOR SELECT USING (auth.uid() = id);
-
-CREATE POLICY "Users can update own profile" ON public.users
-  FOR UPDATE USING (auth.uid() = id);
-  
--- Create a trigger to automatically create a user profile when a new user signs up
-CREATE FUNCTION public.handle_new_user()
-RETURNS TRIGGER 
-LANGUAGE plpgsql
-SECURITY DEFINER SET search_path = ''
-AS $$
-BEGIN
-  INSERT INTO public.users (id, email)
-  VALUES (new.id, new.email);
-  RETURN NEW;
-END;
-$$;
-
--- Create the trigger
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
-
-CREATE OR REPLACE FUNCTION get_user_id_by_email(email TEXT)
-RETURNS TABLE (id uuid)
-SECURITY definer
-AS $$
-BEGIN
-  RETURN QUERY SELECT au.id FROM auth.users au WHERE au.email = $1;
-END;
-$$ LANGUAGE plpgsql;
-
--- Indexes for performance
-CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
-CREATE INDEX IF NOT EXISTS idx_users_created_at ON public.users(created_at);
-```
-
-#### Companies Table
-
-```sql
 -- Companies table
 CREATE TABLE companies (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -131,14 +90,6 @@ CREATE TABLE companies (
     logo_url TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
-```
-
-#### Jobs Table
-
-```sql
--- Job type enum
-CREATE TYPE job_type AS ENUM ('Full-Time', 'Part-Time', 'Contract');
-CREATE TYPE job_status AS ENUM ('active', 'inactive');
 
 -- Jobs table
 CREATE TABLE jobs (
@@ -152,8 +103,48 @@ CREATE TABLE jobs (
     status job_status NOT NULL DEFAULT 'active',
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
+```
 
--- Indexes for better query performance
+#### Step 2: Create Database Functions and Triggers
+
+```sql
+-- Function to automatically create user profile when signing up
+CREATE FUNCTION public.handle_new_user()
+RETURNS TRIGGER 
+LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = ''
+AS $$
+BEGIN
+  INSERT INTO public.users (id, email)
+  VALUES (new.id, new.email);
+  RETURN NEW;
+END;
+$$;
+
+-- Trigger for automatic user profile creation
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+
+-- Function to check if user exists by email (for signup validation)
+CREATE OR REPLACE FUNCTION get_user_id_by_email(email TEXT)
+RETURNS TABLE (id uuid)
+SECURITY definer
+AS $$
+BEGIN
+  RETURN QUERY SELECT au.id FROM auth.users au WHERE au.email = $1;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+#### Step 3: Create Performance Indexes
+
+```sql
+-- Users table indexes
+CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
+CREATE INDEX IF NOT EXISTS idx_users_created_at ON public.users(created_at);
+
+-- Jobs table indexes
 CREATE INDEX idx_jobs_user_id ON jobs(user_id);
 CREATE INDEX idx_jobs_company_id ON jobs(company_id);
 CREATE INDEX idx_jobs_created_at ON jobs(created_at DESC);
@@ -161,14 +152,22 @@ CREATE INDEX idx_jobs_job_type ON jobs(type);
 CREATE INDEX idx_jobs_status ON jobs(status);
 ```
 
-#### Row Level Security Policies
+#### Step 4: Enable Row Level Security and Create Policies
 
 ```sql
--- Row Level Security (RLS) policies
+-- Enable RLS on all tables
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE companies ENABLE ROW LEVEL SECURITY;
 ALTER TABLE jobs ENABLE ROW LEVEL SECURITY;
 
--- Companies policies
+-- Users table policies
+CREATE POLICY "Users can view own profile" ON public.users
+  FOR SELECT USING (auth.uid() = id);
+
+CREATE POLICY "Users can update own profile" ON public.users
+  FOR UPDATE USING (auth.uid() = id);
+
+-- Companies table policies
 CREATE POLICY "Companies are viewable by everyone" ON companies
     FOR SELECT USING (true);
 
@@ -178,7 +177,7 @@ CREATE POLICY "Authenticated users can insert companies" ON companies
 CREATE POLICY "Users can update companies they created" ON companies
     FOR UPDATE USING (auth.uid() IS NOT NULL);
 
--- Jobs policies
+-- Jobs table policies
 CREATE POLICY "Jobs are viewable by everyone" ON jobs
     FOR SELECT USING (true);
 
@@ -194,10 +193,10 @@ CREATE POLICY "Users can delete their own jobs" ON jobs
 
 ### 5. Create Storage Bucket
 
-Create a storage bucket for company logos:
+Create a storage bucket for company logo:
 
 1. Go to Storage in your Supabase dashboard
-2. Create a new bucket named `company-logos`
+2. Create a new bucket named `company-logo`
 3. Set it to public if you want logos to be publicly accessible
 
 ### 6. Install Dependencies
@@ -386,6 +385,8 @@ Given additional development time, the following improvements could enhance the 
 3. **Job Application System** - Enable job seekers to apply directly through the platform, with features for resume uploads, application tracking, and communication between employers and candidates.
 
 4. **Advanced Analytics Dashboard** - Provide comprehensive metrics including application counts, job view statistics, employer response rates, and performance insights to help optimize job postings.
+
+5. **Email Subscription System** - Allow job seekers to subscribe with their email address to receive notifications about new job postings that match their preferences, including job type, location, and industry filters.
 
 ## License
 
