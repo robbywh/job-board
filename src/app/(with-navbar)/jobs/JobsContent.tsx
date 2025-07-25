@@ -148,11 +148,36 @@ export default function JobsContent({
   useEffect(() => {
     const sortedJobs = sortJobs(initialJobs, sortBy);
     setFilteredJobs(sortedJobs);
-    
+  }, [initialJobs, sortBy]);
+
+  useEffect(() => {
     if (initialFilters.search || initialFilters.location || (initialFilters.jobTypes && initialFilters.jobTypes.length > 0)) {
-      handleFiltersChange(currentFilters);
+      // Apply initial filters without calling handleFiltersChange to avoid infinite loop
+      let filtered = initialJobs;
+
+      if (initialFilters.search && initialFilters.search.trim()) {
+        const searchTerm = initialFilters.search.toLowerCase().trim();
+        filtered = filtered.filter(job => 
+          job.title.toLowerCase().includes(searchTerm) ||
+          job.company.toLowerCase().includes(searchTerm) ||
+          job.description.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      if (initialFilters.location && initialFilters.location.trim()) {
+        filtered = filtered.filter(job => 
+          job.location.toLowerCase().includes(initialFilters.location!.toLowerCase())
+        );
+      }
+
+      if (initialFilters.jobTypes && initialFilters.jobTypes.length > 0) {
+        filtered = filtered.filter(job => initialFilters.jobTypes!.includes(job.type));
+      }
+
+      const sortedJobs = sortJobs(filtered, sortBy);
+      setFilteredJobs(sortedJobs);
     }
-  }, [currentFilters, handleFiltersChange, initialFilters.jobTypes, initialFilters.location, initialFilters.search, initialJobs, sortBy]);
+  }, [initialFilters.search, initialFilters.location, initialFilters.jobTypes, initialJobs, sortBy]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-8">

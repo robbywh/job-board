@@ -375,6 +375,18 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## Future Enhancements
+
+Given additional development time, the following improvements could enhance the user experience and functionality:
+
+1. **Enhanced Content Editor** - Implement a rich text editor for job descriptions, allowing employers to format their postings with better styling, bullet points, and structured content presentation.
+
+2. **Standardized Location System** - Replace free-text location input with a structured dropdown or autocomplete system to ensure consistent location data and prevent typos or variations.
+
+3. **Job Application System** - Enable job seekers to apply directly through the platform, with features for resume uploads, application tracking, and communication between employers and candidates.
+
+4. **Advanced Analytics Dashboard** - Provide comprehensive metrics including application counts, job view statistics, employer response rates, and performance insights to help optimize job postings.
+
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).
