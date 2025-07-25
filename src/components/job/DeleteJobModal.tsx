@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import { AlertTriangle, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { deleteJob } from '@/actions/job-actions';
 
 interface DeleteJobModalProps {

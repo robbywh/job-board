@@ -1,5 +1,4 @@
 import { createClient } from '@/utils/supabase/client';
-import { createClient as createServerClient } from '@/utils/supabase/server';
 
 export interface UploadResult {
   success: boolean;
@@ -12,9 +11,6 @@ export interface UploadProgress {
   preview?: string;
 }
 
-/**
- * Validates file for logo upload
- */
 export function validateLogoFile(file: File): { valid: boolean; error?: string } {
   if (file.size > 2 * 1024 * 1024) {
     return { valid: false, error: 'Logo file must be less than 2MB' };
@@ -28,9 +24,6 @@ export function validateLogoFile(file: File): { valid: boolean; error?: string }
   return { valid: true };
 }
 
-/**
- * Generates file preview as data URL
- */
 export function generateFilePreview(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -43,9 +36,6 @@ export function generateFilePreview(file: File): Promise<string> {
   });
 }
 
-/**
- * Uploads a company logo to Supabase storage
- */
 export async function uploadCompanyLogo(file: File): Promise<UploadResult> {
   try {
     const validation = validateLogoFile(file);
@@ -77,43 +67,6 @@ export async function uploadCompanyLogo(file: File): Promise<UploadResult> {
   }
 }
 
-/**
- * Uploads a company logo to Supabase storage (server-side)
- */
-export async function uploadCompanyLogoServer(file: File): Promise<UploadResult> {
-  try {
-    const validation = validateLogoFile(file);
-    if (!validation.valid) {
-      return { success: false, error: validation.error };
-    }
-
-    const supabase = await createServerClient();
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-    const filePath = `company-logos/${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('company-logo')
-      .upload(filePath, file);
-
-    if (uploadError) {
-      return { success: false, error: 'Failed to upload logo' };
-    }
-
-    const { data: { publicUrl } } = supabase.storage
-      .from('company-logo')
-      .getPublicUrl(filePath);
-
-    return { success: true, url: publicUrl };
-  } catch (error) {
-    console.error('Upload error:', error);
-    return { success: false, error: 'An unexpected error occurred during upload' };
-  }
-}
-
-/**
- * Complete logo upload process with validation, preview generation, and upload
- */
 export async function processLogoUpload(
   file: File,
   onProgress?: (progress: UploadProgress) => void
@@ -138,7 +91,7 @@ export async function processLogoUpload(
     onProgress?.({ isUploading: false, preview });
 
     return { preview, uploadResult };
-  } catch (error) {
+  } catch {
     onProgress?.({ isUploading: false });
     return {
       preview: '',

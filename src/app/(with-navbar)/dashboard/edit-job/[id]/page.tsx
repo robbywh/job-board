@@ -2,7 +2,7 @@ import { updateJob } from "./actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { CheckCircle, BarChart3 } from 'lucide-react';
-import { getJobByIdWithAuth } from "@/lib/jobs";
+import { getJobByIdWithAuth } from "@/lib/jobs.server";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { getBreadcrumbs } from "@/lib/breadcrumbs";
 import EditJobFormClient from "./EditJobFormClient";

@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import JobsContent from './JobsContent';
 import JobsPageSkeleton from './JobsPageSkeleton';
-import { getJobsWithPagination } from '@/lib/jobs';
+import { getJobsWithPagination } from '@/lib/jobs.server';
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { getBreadcrumbs } from "@/lib/breadcrumbs";
 

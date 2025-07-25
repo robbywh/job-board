@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { Plus, FileText, Users, Eye, TrendingUp } from 'lucide-react';
-import { getUserJobs } from "@/lib/jobs";
+import { getUserJobs } from "@/lib/jobs.server";
 import JobsTable from "./JobsTable";
 
 export default async function DashboardPage() {

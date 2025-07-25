@@ -175,7 +175,7 @@ export default function JobsTable({ jobs }: JobsTableProps) {
               {<div className="divider"></div>}
               <DeleteJobButton 
                 jobId={selectedJob.id} 
-                jobTitle={selectedJob.title} 
+                jobTitle={selectedJob.title}
               />
             </div>
             <div className="modal-action">

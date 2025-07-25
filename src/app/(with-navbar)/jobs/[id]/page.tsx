@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Building2, MapPin, Clock, Plus, Heart } from 'lucide-react';
-import { getJobById } from "@/lib/jobs";
+import { getJobById } from "@/lib/jobs.server";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { getBreadcrumbs } from "@/lib/breadcrumbs";
 

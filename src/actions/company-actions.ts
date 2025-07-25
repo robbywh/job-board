@@ -2,8 +2,8 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import { getAllCompanies } from '@/lib/companies'
-import { uploadCompanyLogoServer } from '@/lib/upload'
+import { getAllCompanies } from '@/lib/companies.server'
+import { uploadCompanyLogoServer } from '@/lib/upload.server'
 
 export async function getCompanies() {
   const supabase = await createClient()
