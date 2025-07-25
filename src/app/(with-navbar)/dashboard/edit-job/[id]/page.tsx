@@ -6,7 +6,7 @@ import { getJobByIdWithAuth } from "@/lib/jobs.server";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { getBreadcrumbs } from "@/lib/breadcrumbs";
 import EditJobFormClient from "./EditJobFormClient";
-import DeleteJobModal from "@/components/job/DeleteJobModal";
+import DeleteJobWrapper from "./DeleteJobWrapper";
 import PauseJobButton from "@/components/job/PauseJobButton";
 
 export default async function EditJobPage({ params }: { params: Promise<{ id: string }> }) {
@@ -92,7 +92,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                           currentStatus={job.status} 
                           variant="block" 
                         />
-                        <DeleteJobModal
+                        <DeleteJobWrapper
                           jobId={job.id}
                           jobTitle={job.title}
                           trigger={
@@ -144,7 +144,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                         currentStatus={job.status} 
                         variant="block" 
                       />
-                      <DeleteJobModal
+                      <DeleteJobWrapper
                         jobId={job.id}
                         jobTitle={job.title}
                         trigger={

@@ -41,6 +41,7 @@ export async function deleteJob(jobId: string): Promise<{ success: boolean; erro
 
     revalidatePath('/dashboard')
     revalidatePath('/jobs')
+    revalidatePath(`/dashboard/edit-job/${jobId}`)
     
     return { success: true }
 

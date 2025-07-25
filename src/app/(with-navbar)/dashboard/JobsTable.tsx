@@ -176,6 +176,7 @@ export default function JobsTable({ jobs }: JobsTableProps) {
               <DeleteJobButton 
                 jobId={selectedJob.id} 
                 jobTitle={selectedJob.title}
+                onClose={closeModal}
               />
             </div>
             <div className="modal-action">

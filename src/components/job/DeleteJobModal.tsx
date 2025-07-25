@@ -8,10 +8,11 @@ interface DeleteJobModalProps {
   jobId: string;
   jobTitle: string;
   onDelete?: () => void;
+  onClose?: () => void;
   trigger: React.ReactNode;
 }
 
-export default function DeleteJobModal({ jobId, jobTitle, onDelete, trigger }: DeleteJobModalProps) {
+export default function DeleteJobModal({ jobId, jobTitle, onDelete, onClose, trigger }: DeleteJobModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -20,6 +21,7 @@ export default function DeleteJobModal({ jobId, jobTitle, onDelete, trigger }: D
       setIsDeleting(true);
       await deleteJob(jobId);
       onDelete?.();
+      onClose?.(); // Close parent modal after successful deletion
     } catch (error) {
       console.error('Failed to delete job:', error);
       alert('Failed to delete job. Please try again.');
