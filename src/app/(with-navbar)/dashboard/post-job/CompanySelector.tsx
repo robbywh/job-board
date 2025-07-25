@@ -257,7 +257,11 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
 
       <div className="form-control">
         <div className="mb-2">
-          <label className="label-text font-medium mr-2">Company Logo <span className="text-error">*</span></label>
+          <label className="label-text font-medium mr-2">
+            Company Logo 
+            {(isNewCompany || !selectedCompany?.logo_url) && <span className="text-error">*</span>}
+            {selectedCompany?.logo_url && !isNewCompany && <span className="text-base-content/60">(optional)</span>}
+          </label>
           <span className="label-text-alt text-base-content/60 text-xs">PNG, JPG, WebP, SVG • Max 2MB</span>
         </div>
         
@@ -285,7 +289,7 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
               accept=".png,.jpg,.jpeg,.webp,.svg"
               onChange={handleLogoChange}
               className="file-input file-input-bordered file-input-sm w-full text-sm"
-              required
+              required={isNewCompany || !selectedCompany?.logo_url}
               disabled={disabled || isUploading}
               name="logo"
             />
@@ -303,7 +307,12 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
               <div className="mt-2">
                 <div className="alert alert-info py-2 px-3">
                   <Info className="w-4 h-4 flex-shrink-0" />
-                  <span className="text-xs">Upload a new logo to update the company logo</span>
+                  <span className="text-xs">
+                    {selectedCompany.logo_url 
+                      ? "Upload a new logo to update the company logo (optional)" 
+                      : "Upload a logo for this company"
+                    }
+                  </span>
                 </div>
               </div>
             )}
