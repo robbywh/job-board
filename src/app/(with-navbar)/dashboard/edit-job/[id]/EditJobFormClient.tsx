@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import { useFormStatus } from 'react-dom';
-import { useActionState } from 'react';
-import { Check, AlertCircle, Building2 } from 'lucide-react';
+import { useActionState, useState } from 'react';
+import { Check, AlertCircle, Building2, ImageIcon, Upload } from 'lucide-react';
+import { processLogoUpload, UploadProgress } from '@/lib/upload';
 
 interface FormState {
   success: boolean;
@@ -58,6 +59,32 @@ export default function EditJobFormClient({ job, updateJobAction }: EditJobFormC
     errors: {}
   });
 
+  const [logoPreview, setLogoPreview] = useState(job.companies.logo_url || '');
+  const [logoUrl, setLogoUrl] = useState(job.companies.logo_url || '');
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const handleProgress = (progress: UploadProgress) => {
+      setIsUploading(progress.isUploading);
+      if (progress.preview) {
+        setLogoPreview(progress.preview);
+      }
+    };
+
+    const { uploadResult } = await processLogoUpload(file, handleProgress);
+
+    if (uploadResult.success && uploadResult.url) {
+      setLogoUrl(uploadResult.url);
+    } else {
+      alert(uploadResult.error || 'Failed to upload logo. Please try again.');
+      setLogoPreview(job.companies.logo_url || '');
+      setLogoUrl(job.companies.logo_url || '');
+    }
+  };
+
   return (
     <form action={formAction} className="space-y-5">
       <input type="hidden" name="jobId" value={job.id} />
@@ -101,9 +128,9 @@ export default function EditJobFormClient({ job, updateJobAction }: EditJobFormC
         <div className="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
           <div className="avatar">
             <div className="w-10 h-10 rounded bg-base-300">
-              {job.companies.logo_url ? (
+              {logoPreview ? (
                 <Image 
-                  src={job.companies.logo_url} 
+                  src={logoPreview} 
                   alt={`${job.companies.name} logo`} 
                   width={40}
                   height={40}
@@ -116,13 +143,67 @@ export default function EditJobFormClient({ job, updateJobAction }: EditJobFormC
               )}
             </div>
           </div>
-          <div>
+          <div className="flex-1">
             <div className="font-semibold">{job.companies.name}</div>
-            <div className="text-sm text-base-content/60">Company cannot be changed when editing</div>
+            <div className="text-sm text-base-content/60">Company name cannot be changed when editing</div>
           </div>
         </div>
         <input type="hidden" name="companyId" value={job.company_id} />
         <input type="hidden" name="isNewCompany" value="false" />
+        <input type="hidden" name="logoUrl" value={logoUrl} />
+      </div>
+
+      <div className="form-control">
+        <div className="mb-2">
+          <label className="label-text font-medium">Company Logo <span className="text-base-content/60">(optional)</span></label>
+          <span className="label-text-alt text-base-content/60 text-xs ml-2">PNG, JPG, WebP, SVG • Max 2MB</span>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+          <div className="avatar self-center sm:self-start">
+            <div className="w-16 h-16 rounded-lg bg-base-200 flex items-center justify-center flex-shrink-0">
+              {logoPreview ? (
+                <Image 
+                  src={logoPreview} 
+                  alt="Company logo preview" 
+                  width={64}
+                  height={64}
+                  style={{ width: '64px', height: '64px' }}
+                  className="object-cover rounded-lg" 
+                />
+              ) : (
+                <ImageIcon className="w-8 h-8 text-base-content/40" />
+              )}
+            </div>
+          </div>
+          
+          <div className="flex-1 w-full sm:w-auto">
+            <input 
+              type="file" 
+              accept=".png,.jpg,.jpeg,.webp,.svg"
+              onChange={handleLogoChange}
+              className="file-input file-input-bordered file-input-sm w-full text-sm"
+              disabled={isUploading}
+              name="logo"
+            />
+            
+            {isUploading && (
+              <div className="mt-2">
+                <div className="alert alert-info py-2 px-3">
+                  <span className="loading loading-spinner loading-sm"></span>
+                  <span className="text-xs">Uploading logo...</span>
+                </div>
+              </div>
+            )}
+            
+            <div className="mt-2">
+              <div className="alert alert-info py-2 px-3">
+                <Upload className="w-4 h-4 flex-shrink-0" />
+                <span className="text-xs">Upload a new logo to update the company logo</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
