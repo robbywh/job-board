@@ -2,6 +2,8 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
+import { getAllCompanies } from '@/lib/companies'
+import { uploadCompanyLogoServer } from '@/lib/upload'
 
 export async function getCompanies() {
   const supabase = await createClient()
@@ -13,17 +15,12 @@ export async function getCompanies() {
       redirect('/')
     }
 
-    const { data: companies, error } = await supabase
-      .from('companies')
-      .select('id, name, logo_url')
-      .order('name')
-
-    if (error) {
-      console.error('Error fetching companies:', error)
-      return []
-    }
-
-    return companies || []
+    const companies = await getAllCompanies()
+    return companies.map(company => ({
+      id: company.id,
+      name: company.name,
+      logo_url: company.logo_url
+    }))
 
   } catch (error) {
     console.error('Unexpected error fetching companies:', error)
@@ -47,38 +44,8 @@ export async function uploadCompanyLogo(formData: FormData): Promise<{ success: 
       return { success: false, error: 'No file provided' }
     }
 
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-    if (!allowedTypes.includes(file.type)) {
-      return { success: false, error: 'Only JPEG, PNG, and WebP images are allowed' }
-    }
-
-    // Validate file size (5MB limit)
-    const maxSize = 5 * 1024 * 1024
-    if (file.size > maxSize) {
-      return { success: false, error: 'File size must be less than 5MB' }
-    }
-
-    // Generate unique filename
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
-
-    // Upload to Supabase Storage
-    const { error: uploadError } = await supabase.storage
-      .from('company-logos')
-      .upload(fileName, file)
-
-    if (uploadError) {
-      console.error('Upload error:', uploadError)
-      return { success: false, error: 'Failed to upload logo' }
-    }
-
-    // Get public URL
-    const { data: { publicUrl } } = supabase.storage
-      .from('company-logos')
-      .getPublicUrl(fileName)
-
-    return { success: true, url: publicUrl }
+    const uploadResult = await uploadCompanyLogoServer(file)
+    return uploadResult
 
   } catch (error) {
     console.error('Unexpected error uploading logo:', error)

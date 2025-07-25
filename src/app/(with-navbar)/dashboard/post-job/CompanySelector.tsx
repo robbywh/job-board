@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Search, Building2, Plus, Zap, ImageIcon, Info } from 'lucide-react';
-import { createClient } from '@/utils/supabase/client';
 import { Company } from '@/types/database';
+import { processLogoUpload, UploadProgress } from '@/lib/upload';
+import { getAllCompaniesClient } from '@/lib/companies';
 
 interface CompanySelectorProps {
   onCompanySelect: (company: Company | null, isNew: boolean, searchTerm: string) => void;
@@ -27,16 +28,9 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from('companies')
-        .select('*')
-        .order('name');
-      
-      if (!error && data) {
-        setCompanies(data);
-        setFilteredCompanies(data);
-      }
+      const data = await getAllCompaniesClient();
+      setCompanies(data);
+      setFilteredCompanies(data);
     };
 
     fetchCompanies();
@@ -119,58 +113,30 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
 
   const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert('Logo file must be less than 2MB');
-        return;
+    if (!file) return;
+
+    onUploadStateChange(true);
+
+    const handleProgress = (progress: UploadProgress) => {
+      setIsUploading(progress.isUploading);
+      if (progress.preview) {
+        setLogoPreview(progress.preview);
       }
-      
-      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml'];
-      if (!allowedTypes.includes(file.type)) {
-        alert('Logo must be a PNG, JPG, WebP, or SVG file');
-        return;
-      }
+    };
 
-      setIsUploading(true);
-      onUploadStateChange(true);
+    const { preview, uploadResult } = await processLogoUpload(file, handleProgress);
 
-      try {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const preview = e.target?.result as string;
-          setLogoPreview(preview);
-        };
-        reader.readAsDataURL(file);
-
-        const supabase = createClient();
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-        const filePath = `company-logos/${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('company-logo')
-          .upload(filePath, file);
-
-        if (uploadError) {
-          throw new Error('Failed to upload logo');
-        }
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('company-logo')
-          .getPublicUrl(filePath);
-
-        setLogoUrl(publicUrl);
-        onLogoSelect(file, logoPreview, publicUrl);
-      } catch {
-        alert('Failed to upload logo. Please try again.');
-        setLogoPreview('');
-        setLogoUrl('');
-        onLogoSelect(null, '');
-      } finally {
-        setIsUploading(false);
-        onUploadStateChange(false);
-      }
+    if (uploadResult.success && uploadResult.url) {
+      setLogoUrl(uploadResult.url);
+      onLogoSelect(file, preview, uploadResult.url);
+    } else {
+      alert(uploadResult.error || 'Failed to upload logo. Please try again.');
+      setLogoPreview('');
+      setLogoUrl('');
+      onLogoSelect(null, '');
     }
+
+    onUploadStateChange(false);
   };
 
   return (
