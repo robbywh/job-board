@@ -239,7 +239,7 @@ erDiagram
         varchar title
         text description
         varchar location
-        varchar job_type "Enum: Full-Time, Part-Time, Contract"
+        varchar type "Enum: Full-Time, Part-Time, Contract"
         varchar status "Enum: active, inactive"
         timestamptz created_at
     }
