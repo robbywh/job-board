@@ -12,7 +12,7 @@ export default function LogoutButton({ onClose }: LogoutButtonProps) {
   const supabase = createClient();
 
   const handleLogout = async () => {
-    onClose?.(); // Close dropdown first
+    onClose?.();
     await supabase.auth.signOut();
     router.push('/');
   };

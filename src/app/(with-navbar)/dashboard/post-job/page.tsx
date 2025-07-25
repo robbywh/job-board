@@ -10,7 +10,6 @@ export const metadata = {
 };
 
 export default async function PostJobPage() {
-  // Server-side authentication check
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   
@@ -20,7 +19,6 @@ export default async function PostJobPage() {
 
   return (
     <>
-      {/* Breadcrumb */}
       <Breadcrumb items={getBreadcrumbs.postJob()} />
 
       <PostJobFormServer />

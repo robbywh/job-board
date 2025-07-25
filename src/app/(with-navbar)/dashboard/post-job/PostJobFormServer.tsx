@@ -73,9 +73,7 @@ export default function PostJobFormServer() {
               </div>
             </div>
 
-            {/* Desktop: Sticky Sidebar */}
             <div className="hidden lg:block xl:sticky xl:top-6 space-y-4">
-              {/* Tips Card */}
               <div className="card bg-base-100 shadow-lg">
                 <div className="card-body p-4">
                   <h3 className="font-semibold text-base mb-3 flex items-center gap-2">

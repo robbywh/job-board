@@ -24,7 +24,6 @@ export default function JobCard({ job, showActions = false }: JobCardProps) {
       <div className="card-body">
         <div className="flex justify-between items-start">
           <div className="flex items-start gap-4 flex-1">
-            {/* Company Logo */}
             <div className="avatar flex-shrink-0">
               <div className="w-12 h-12 rounded-lg bg-base-200 flex items-center justify-center">
                 {job.companyLogo ? (
@@ -45,7 +44,6 @@ export default function JobCard({ job, showActions = false }: JobCardProps) {
               </div>
             </div>
             
-            {/* Job Info */}
             <div className="flex-1">
               <h3 className="card-title text-lg">{job.title}</h3>
               <p className="text-base-content/70 font-medium">{job.company}</p>

@@ -3,7 +3,6 @@ import BreadcrumbSkeleton from "@/components/ui/BreadcrumbSkeleton";
 export default function Loading() {
   return (
     <>
-      {/* Breadcrumb Skeleton */}
       <BreadcrumbSkeleton itemCount={3} />
 
       <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
@@ -14,11 +13,9 @@ export default function Loading() {
         <div className="container mx-auto px-4 py-8 relative z-10">
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
           <div className="lg:col-span-2">
             <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
               <div className="card-body">
-                {/* Header */}
                 <div className="flex justify-between items-start mb-6">
                   <div className="flex-1">
                     <div className="flex items-center gap-4 mb-4">
@@ -44,7 +41,6 @@ export default function Loading() {
                   <div className="skeleton h-8 w-20 rounded-full"></div>
                 </div>
 
-                {/* Description */}
                 <div className="mb-6">
                   <div className="skeleton h-6 w-32 mb-4"></div>
                   <div className="space-y-2">
@@ -57,7 +53,6 @@ export default function Loading() {
                   </div>
                 </div>
 
-                {/* Requirements */}
                 <div className="mb-6">
                   <div className="skeleton h-6 w-28 mb-4"></div>
                   <div className="space-y-2">
@@ -70,13 +65,11 @@ export default function Loading() {
                   </div>
                 </div>
 
-                {/* Apply Button */}
                 <div className="skeleton h-12 w-32"></div>
               </div>
             </div>
           </div>
 
-          {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg sticky top-8">
               <div className="card-body">

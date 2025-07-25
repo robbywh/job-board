@@ -29,12 +29,10 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
     const newFilters = { ...filters, search: value };
     setFilters(newFilters);
     
-    // Clear previous timeout
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
     
-    // Set new timeout for debouncing
     searchTimeoutRef.current = setTimeout(() => {
       onFiltersChange?.(newFilters);
     }, 300);
@@ -44,12 +42,10 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
     const newFilters = { ...filters, location: value };
     setFilters(newFilters);
     
-    // Clear previous timeout
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
     
-    // Set new timeout for debouncing
     searchTimeoutRef.current = setTimeout(() => {
       onFiltersChange?.(newFilters);
     }, 300);
@@ -66,7 +62,6 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
   };
 
   const clearFilters = () => {
-    // Clear any pending timeouts first
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
@@ -76,14 +71,12 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
     onFiltersChange?.(newFilters);
   };
 
-  // Update local state when initialFilters change
   useEffect(() => {
     if (initialFilters) {
       setFilters(initialFilters);
     }
   }, [initialFilters]);
 
-  // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (searchTimeoutRef.current) {
@@ -115,7 +108,6 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
         </div>
         
         <div className="space-y-6">
-          {/* Search */}
           <div className="form-control">
             <label className="label">
               <span className="label-text font-medium flex items-center gap-2">
@@ -135,7 +127,6 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
             />
           </div>
 
-          {/* Location Filter */}
           <div className="form-control">
             <label className="label">
               <span className="label-text font-medium flex items-center gap-2">
@@ -156,7 +147,6 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
             />
           </div>
 
-          {/* Job Type Filter */}
           <div className="form-control">
             <label className="label">
               <span className="label-text font-medium flex items-center gap-2">
@@ -183,7 +173,6 @@ export default function JobFilters({ onFiltersChange, initialFilters, isLoading 
           </div>
         </div>
 
-        {/* Active Filters */}
         {(filters.search || filters.location || filters.jobTypes.length > 0) && (
           <div className="mt-6 pt-6 border-t border-base-300">
             <div className="label">

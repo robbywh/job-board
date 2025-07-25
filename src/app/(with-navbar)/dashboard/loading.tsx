@@ -6,7 +6,6 @@ export default function Loading() {
         <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
       </div>
       <div className="container mx-auto px-4 py-8 relative z-10">
-        {/* Page Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
             <div className="skeleton h-10 w-64 mb-2"></div>
@@ -15,7 +14,6 @@ export default function Loading() {
           <div className="skeleton h-10 w-32"></div>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="stat bg-base-100/90 backdrop-blur-sm shadow-lg rounded-box">
@@ -31,7 +29,6 @@ export default function Loading() {
           ))}
         </div>
 
-        {/* Job Listings Table */}
         <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
           <div className="card-body">
             <div className="flex justify-between items-center mb-6">

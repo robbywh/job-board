@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import JobCard from "@/components/job/JobCard";
 import JobFilters, { JobFilters as FilterTypes } from "@/components/job/JobFilters";
@@ -48,7 +48,6 @@ export default function JobsContent({
   });
   const [sortBy, setSortBy] = useState<'newest' | 'oldest'>('newest');
 
-  // Sort jobs function
   const sortJobs = (jobs: Job[], sortOrder: 'newest' | 'oldest') => {
     return [...jobs].sort((a, b) => {
       const dateA = new Date(a.postedAt).getTime();
@@ -57,12 +56,10 @@ export default function JobsContent({
     });
   };
 
-  // Handle page navigation
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', page.toString());
     
-    // Preserve existing filters
     if (currentFilters.search) params.set('search', currentFilters.search);
     if (currentFilters.location) params.set('location', currentFilters.location);
     if (currentFilters.jobTypes.length > 0) params.set('jobTypes', currentFilters.jobTypes.join(','));
@@ -70,15 +67,12 @@ export default function JobsContent({
     router.push(`?${params.toString()}`);
   };
 
-  const handleFiltersChange = (filters: FilterTypes) => {
+  const handleFiltersChange = useCallback((filters: FilterTypes) => {
     setIsFiltering(true);
     setCurrentFilters(filters);
     
-    // For now, we'll navigate to a new page with filters in URL
-    // In a real app, you might want to implement client-side filtering 
-    // or make a new server request with filters
     const params = new URLSearchParams(searchParams);
-    params.set('page', '1'); // Reset to first page when filtering
+    params.set('page', '1');
     
     if (filters.search?.trim()) {
       params.set('search', filters.search.trim());
@@ -100,11 +94,9 @@ export default function JobsContent({
     
     router.push(`?${params.toString()}`);
     
-    // For immediate feedback, we'll do client-side filtering of current data
     setTimeout(() => {
       let filtered = initialJobs;
 
-      // Search filter - search in title, company, and description
       if (filters.search && filters.search.trim()) {
         const searchTerm = filters.search.toLowerCase().trim();
         filtered = filtered.filter(job => 
@@ -114,38 +106,32 @@ export default function JobsContent({
         );
       }
 
-      // Location filter - use includes for partial matching
       if (filters.location && filters.location.trim()) {
         filtered = filtered.filter(job => 
           job.location.toLowerCase().includes(filters.location.toLowerCase())
         );
       }
 
-      // Job type filter
       if (filters.jobTypes.length > 0) {
         filtered = filtered.filter(job => filters.jobTypes.includes(job.type));
       }
 
-      // Apply sorting
       const sortedJobs = sortJobs(filtered, sortBy);
       setFilteredJobs(sortedJobs);
       setIsFiltering(false);
     }, 300);
-  };
+  }, [searchParams, router, initialJobs, sortBy]);
 
-  // Handle sort change
   const handleSortChange = (newSortBy: 'newest' | 'oldest') => {
     setSortBy(newSortBy);
     const sortedJobs = sortJobs(filteredJobs, newSortBy);
     setFilteredJobs(sortedJobs);
   };
 
-  // Handle clear filters - unified function for both JobFilters and Clear Filters button
   const handleClearFilters = () => {
     const newFilters = { search: '', location: '', jobTypes: [] };
     setCurrentFilters(newFilters);
     
-    // Update URL and apply filters
     const params = new URLSearchParams(searchParams);
     params.set('page', '1');
     params.delete('search');
@@ -154,23 +140,18 @@ export default function JobsContent({
     
     router.push(`?${params.toString()}`);
     
-    // Apply cleared filters to show all jobs
     const sortedJobs = sortJobs(initialJobs, sortBy);
     setFilteredJobs(sortedJobs);
   };
 
-  // Apply initial sorting and filters on mount
   useEffect(() => {
-    // Apply initial sorting
     const sortedJobs = sortJobs(initialJobs, sortBy);
     setFilteredJobs(sortedJobs);
     
-    // Apply filters if any exist
     if (initialFilters.search || initialFilters.location || (initialFilters.jobTypes && initialFilters.jobTypes.length > 0)) {
       handleFiltersChange(currentFilters);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentFilters, handleFiltersChange, initialFilters.jobTypes, initialFilters.location, initialFilters.search, initialJobs, sortBy]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-8">

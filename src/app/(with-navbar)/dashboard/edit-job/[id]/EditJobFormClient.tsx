@@ -48,7 +48,6 @@ function SubmitButton() {
 export default function EditJobFormClient({ job, updateJobAction }: EditJobFormClientProps) {
   return (
     <form action={updateJobAction} className="space-y-5">
-      {/* Job Title */}
       <div className="form-control">
         <div className="mb-2">
           <label className="label-text font-medium">Job Title <span className="text-error">*</span></label>
@@ -63,7 +62,6 @@ export default function EditJobFormClient({ job, updateJobAction }: EditJobFormC
         />
       </div>
 
-      {/* Company - Read only */}
       <div className="form-control">
         <div className="mb-2">
           <label className="label-text font-medium">Company <span className="text-error">*</span></label>
@@ -97,9 +95,7 @@ export default function EditJobFormClient({ job, updateJobAction }: EditJobFormC
         <input type="hidden" name="isNewCompany" value="false" />
       </div>
 
-      {/* Location and Job Type Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-        {/* Location */}
         <div className="form-control">
           <div className="mb-2">
             <label className="label-text font-medium">Location <span className="text-error">*</span></label>
@@ -114,7 +110,6 @@ export default function EditJobFormClient({ job, updateJobAction }: EditJobFormC
           />
         </div>
 
-        {/* Job Type */}
         <div className="form-control">
           <div className="mb-2">
             <label className="label-text font-medium">Job Type <span className="text-error">*</span></label>
@@ -133,7 +128,6 @@ export default function EditJobFormClient({ job, updateJobAction }: EditJobFormC
         </div>
       </div>
 
-      {/* Job Description */}
       <div className="form-control">
         <div className="mb-2">
           <label className="label-text font-medium">Job Description <span className="text-error">*</span></label>
@@ -150,7 +144,6 @@ export default function EditJobFormClient({ job, updateJobAction }: EditJobFormC
         </div>
       </div>
 
-      {/* Submit Button */}
       <div className="form-control pt-6 sm:pt-8">
         <SubmitButton />
         <div className="text-center mt-3">

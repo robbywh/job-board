@@ -1,4 +1,5 @@
 import { AuthError } from '@supabase/supabase-js'
+import { validateEmail } from './utils'
 
 export interface AuthResult {
   success: boolean
@@ -48,7 +49,7 @@ export function validateAuthInput(email: string, password: string): AuthResult {
     return { success: false, error: 'Email is required' }
   }
 
-  if (!isValidEmail(email)) {
+  if (!validateEmail(email)) {
     return { success: false, error: 'Please enter a valid email address' }
   }
 
@@ -59,7 +60,3 @@ export function validateAuthInput(email: string, password: string): AuthResult {
   return { success: true }
 }
 
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
-}

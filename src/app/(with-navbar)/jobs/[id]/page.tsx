@@ -36,7 +36,6 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
 
   return (
     <>
-      {/* Breadcrumb */}
       <Breadcrumb items={getBreadcrumbs.jobDetail(job.title)} />
 
       <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">

@@ -3,7 +3,6 @@ import BreadcrumbSkeleton from "@/components/ui/BreadcrumbSkeleton";
 export default function Loading() {
   return (
     <>
-      {/* Breadcrumb Skeleton */}
       <BreadcrumbSkeleton itemCount={2} />
 
       <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
@@ -16,14 +15,12 @@ export default function Loading() {
             <div className="flex-1 xl:max-w-4xl">
               <div className="card bg-base-100 shadow-lg">
                 <div className="card-body p-4 sm:p-6">
-                  {/* Header Skeleton */}
                   <div className="text-center mb-4 sm:mb-6">
                     <div className="skeleton h-8 sm:h-9 w-52 mx-auto mb-2"></div>
                     <div className="skeleton h-4 sm:h-5 w-56 mx-auto"></div>
                   </div>
                   
                   <div className="space-y-6">
-                    {/* Form Fields Skeleton */}
                     {[1, 2].map(i => (
                       <div key={i} className="form-control">
                         <div className="skeleton h-4 w-24 mb-2"></div>
@@ -31,7 +28,6 @@ export default function Loading() {
                       </div>
                     ))}
 
-                    {/* Two Column Fields */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {[1, 2].map(i => (
                         <div key={i} className="form-control">
@@ -41,13 +37,11 @@ export default function Loading() {
                       ))}
                     </div>
 
-                    {/* Single Field */}
                     <div className="form-control">
                       <div className="skeleton h-4 w-20 mb-2"></div>
                       <div className="skeleton h-12 w-full"></div>
                     </div>
 
-                    {/* Textarea Fields */}
                     {[1, 2, 3, 4].map(i => (
                       <div key={i} className="form-control">
                         <div className="skeleton h-4 w-32 mb-2"></div>
@@ -55,7 +49,6 @@ export default function Loading() {
                       </div>
                     ))}
 
-                    {/* Submit Buttons */}
                     <div className="form-control mt-8">
                       <div className="flex gap-4">
                         <div className="skeleton h-12 flex-1"></div>
@@ -68,7 +61,6 @@ export default function Loading() {
             </div>
 
             <div className="xl:w-80 xl:flex-shrink-0">
-              {/* Mobile: Collapsible Tips Skeleton */}
               <div className="lg:hidden mb-4">
                 <div className="collapse collapse-arrow bg-base-100 shadow-lg">
                   <input type="checkbox" disabled /> 
@@ -92,9 +84,7 @@ export default function Loading() {
                 </div>
               </div>
 
-              {/* Desktop: Sticky Sidebar Skeleton */}
               <div className="hidden lg:block xl:sticky xl:top-6 space-y-4">
-                {/* Tips Card Skeleton */}
                 <div className="card bg-base-100 shadow-lg">
                   <div className="card-body p-4">
                     <div className="flex items-center gap-2 mb-3">
@@ -116,7 +106,6 @@ export default function Loading() {
                   </div>
                 </div>
 
-                {/* Stats Card Skeleton */}
                 <div className="card bg-base-100 shadow-lg">
                   <div className="card-body p-4 text-center">
                     <div className="stat p-0">

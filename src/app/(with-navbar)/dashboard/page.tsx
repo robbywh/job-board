@@ -12,14 +12,12 @@ export default async function DashboardPage() {
     redirect('/');
   }
 
-  // Fetch user's jobs with company data
   const jobs = await getUserJobs(user.id);
   
-  // Calculate stats
   const activeJobs = jobs.length;
-  const totalApplications = 0; // Would need applications table
-  const totalViews = 0; // Would need views tracking
-  const responseRate = 0; // Would need response tracking
+  const totalApplications = 0;
+  const totalViews = 0;
+  const responseRate = 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
@@ -28,7 +26,6 @@ export default async function DashboardPage() {
         <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
       </div>
       <div className="container mx-auto px-4 py-8 relative z-10">
-        {/* Page Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
@@ -42,7 +39,6 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="stat bg-base-100/90 backdrop-blur-sm shadow-lg rounded-box">
             <div className="stat-figure text-primary">
@@ -90,11 +86,9 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Job Listings Table - Only show if there are jobs */}
         {jobs.length > 0 ? (
           <JobsTable jobs={jobs} />
         ) : (
-          /* Empty State - Show when no jobs exist */
           <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
             <div className="card-body">
               <div className="text-center py-12">

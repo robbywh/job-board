@@ -30,12 +30,10 @@ export default function DeleteJobModal({ jobId, jobTitle, onDelete, trigger }: D
 
   return (
     <>
-      {/* Trigger element */}
       <div onClick={() => setIsOpen(true)}>
         {trigger}
       </div>
 
-      {/* Modal */}
       {isOpen && (
         <div className="modal modal-open">
           <div className="modal-box">

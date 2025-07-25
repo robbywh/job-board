@@ -6,7 +6,6 @@ import { useState } from "react";
 import { Job, Company } from "@/types/database";
 import DeleteJobButton from "./DeleteJobButton";
 
-// Extended job type with company data
 type JobWithCompany = Job & {
   companies: Company;
 };
@@ -30,7 +29,6 @@ export default function JobsTable({ jobs }: JobsTableProps) {
     setIsModalOpen(false);
   };
 
-  // Filter jobs based on status
   const filteredJobs = statusFilter === 'all' 
     ? jobs 
     : jobs.filter(job => job.status === statusFilter);
@@ -161,7 +159,6 @@ export default function JobsTable({ jobs }: JobsTableProps) {
         </div>
       </div>
       
-      {/* Actions Modal */}
       {isModalOpen && selectedJob && (
         <div className="modal modal-open">
           <div className="modal-box">

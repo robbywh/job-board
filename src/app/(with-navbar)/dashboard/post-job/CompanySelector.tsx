@@ -24,7 +24,6 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
   const [isUploading, setIsUploading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Fetch companies
   useEffect(() => {
     const fetchCompanies = async () => {
       const supabase = createClient();
@@ -42,7 +41,6 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
     fetchCompanies();
   }, []);
 
-  // Handle click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -136,7 +134,6 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
       onUploadStateChange(true);
 
       try {
-        // Create preview
         const reader = new FileReader();
         reader.onload = (e) => {
           const preview = e.target?.result as string;
@@ -144,7 +141,6 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
         };
         reader.readAsDataURL(file);
 
-        // Upload to Supabase
         const supabase = createClient();
         const fileExt = file.name.split('.').pop();
         const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
@@ -178,7 +174,6 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
 
   return (
     <div className="space-y-4">
-      {/* Company Search */}
       <div className="form-control">
         <div className="mb-2">
           <label className="label-text font-medium">Company <span className="text-error">*</span></label>
@@ -196,14 +191,12 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
             name="companyName"
           />
           
-          {/* Search icon */}
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
             <svg className="w-4 h-4 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
           
-          {/* Dropdown */}
           {showDropdown && (filteredCompanies.length > 0 || searchTerm.trim()) && (
             <div className="absolute z-50 w-full mt-1 bg-base-100 border border-base-300 rounded-box shadow-xl max-h-44 sm:max-h-48 overflow-y-auto">
               {filteredCompanies.map((company) => (
@@ -271,7 +264,6 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
         )}
       </div>
 
-      {/* Logo Upload */}
       <div className="form-control">
         <div className="mb-2">
           <label className="label-text font-medium mr-2">Company Logo</label>
@@ -279,7 +271,6 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
         </div>
         
         <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
-          {/* Logo Preview */}
           <div className="avatar self-center sm:self-start">
             <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-base-200 flex items-center justify-center flex-shrink-0">
               {logoPreview ? (
@@ -298,7 +289,6 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
             </div>
           </div>
           
-          {/* File Input */}
           <div className="flex-1 w-full sm:w-auto">
             <input 
               type="file" 
@@ -332,7 +322,6 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
         </div>
       </div>
 
-      {/* Hidden inputs for form submission */}
       <input type="hidden" name="selectedCompanyId" value={selectedCompany?.id || ''} />
       <input type="hidden" name="isNewCompany" value={isNewCompany.toString()} />
       <input type="hidden" name="logoUrl" value={logoUrl} />

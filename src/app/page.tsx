@@ -2,15 +2,13 @@ import { redirect } from 'next/navigation'
 import Link from "next/link";
 import Footer from "@/components/ui/Footer";
 import { createClient } from '@/utils/supabase/server'
-import LoginForm from '@/app/LoginForm'
+import LoginForm from '@/app/login/LoginForm'
 
 export default async function Home() {
-  // Check if user is already authenticated on the server
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   
   if (user) {
-    // User is authenticated, redirect to dashboard
     redirect('/dashboard')
   }
   return (
@@ -41,7 +39,6 @@ export default async function Home() {
               Join thousands of professionals building their future through our platform.
             </p>
             
-            {/* Stats */}
             <div className="stats shadow bg-base-100/50 backdrop-blur-sm mb-6">
               <div className="stat place-items-center">
                 <div className="stat-title">Active Jobs</div>

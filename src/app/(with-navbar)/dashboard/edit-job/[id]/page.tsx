@@ -25,7 +25,6 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
 
   return (
     <>
-      {/* Breadcrumb */}
       <Breadcrumb items={getBreadcrumbs.editJob()} />
 
       <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
@@ -57,7 +56,6 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
             </div>
 
             <div className="xl:w-80 xl:flex-shrink-0">
-              {/* Mobile: Collapsible Job Status */}
               <div className="lg:hidden mb-4">
                 <div className="collapse collapse-arrow bg-base-100 shadow-lg">
                   <input type="checkbox" /> 
@@ -109,9 +107,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                 </div>
               </div>
 
-              {/* Desktop: Sticky Sidebar */}
               <div className="hidden lg:block xl:sticky xl:top-6 space-y-4">
-                {/* Job Status Card */}
                 <div className="card bg-base-100 shadow-lg">
                   <div className="card-body p-4">
                     <h3 className="font-semibold text-base mb-3 flex items-center gap-2">
@@ -163,7 +159,6 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                   </div>
                 </div>
 
-                {/* Performance Card */}
                 <div className="card bg-base-100 shadow-lg">
                   <div className="card-body p-4">
                     <h3 className="font-semibold text-base mb-3 flex items-center gap-2">

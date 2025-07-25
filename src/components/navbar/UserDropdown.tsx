@@ -10,7 +10,6 @@ interface UserDropdownProps {
 
 export default function UserDropdown({ user }: UserDropdownProps) {
   const closeDropdown = () => {
-    // Remove focus from the dropdown to close it
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }

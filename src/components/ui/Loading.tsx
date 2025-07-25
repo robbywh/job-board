@@ -19,12 +19,10 @@ export function LoadingCard() {
       <div className="card-body">
         <div className="flex justify-between items-start">
           <div className="flex items-start gap-4 flex-1">
-            {/* Company Logo Skeleton */}
             <div className="avatar flex-shrink-0">
               <div className="skeleton w-12 h-12 rounded-lg"></div>
             </div>
             
-            {/* Job Info Skeleton */}
             <div className="flex-1">
               <div className="skeleton h-6 w-3/4 mb-2"></div>
               <div className="skeleton h-4 w-1/2 mb-2"></div>

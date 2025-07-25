@@ -43,11 +43,9 @@ export default function PostJobFormClient() {
   const [isLogoUploading, setIsLogoUploading] = useState(false);
   
   const handleCompanySelect = () => {
-    // Company selection handled by CompanySelector component
   };
 
   const handleLogoSelect = () => {
-    // Logo selection handled by CompanySelector component
   };
   
   const handleUploadStateChange = (uploading: boolean) => {
@@ -56,7 +54,6 @@ export default function PostJobFormClient() {
 
   return (
     <>
-      {/* Success Message */}
       {state.success && (
         <div className="alert alert-success mb-4">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,7 +63,6 @@ export default function PostJobFormClient() {
         </div>
       )}
 
-      {/* Error Message */}
       {state.error && (
         <div className="alert alert-error mb-4">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +73,6 @@ export default function PostJobFormClient() {
       )}
 
       <form action={formAction} className="space-y-5">
-        {/* Job Title */}
         <div className="form-control">
           <div className="mb-2">
             <label className="label-text font-medium">Job Title <span className="text-error">*</span></label>
@@ -96,16 +91,13 @@ export default function PostJobFormClient() {
           )}
         </div>
 
-        {/* Company Selector */}
         <CompanySelector 
           onCompanySelect={handleCompanySelect}
           onLogoSelect={handleLogoSelect}
           onUploadStateChange={handleUploadStateChange}
         />
 
-        {/* Location and Job Type Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-          {/* Location */}
           <div className="form-control">
             <div className="mb-2">
               <label className="label-text font-medium">Location <span className="text-error">*</span></label>
@@ -124,7 +116,6 @@ export default function PostJobFormClient() {
             )}
           </div>
 
-          {/* Job Type */}
           <div className="form-control">
             <div className="mb-2">
               <label className="label-text font-medium">Job Type <span className="text-error">*</span></label>
@@ -147,7 +138,6 @@ export default function PostJobFormClient() {
           </div>
         </div>
 
-        {/* Job Description */}
         <div className="form-control">
           <div className="mb-2">
             <label className="label-text font-medium">Job Description <span className="text-error">*</span></label>
@@ -168,7 +158,6 @@ export default function PostJobFormClient() {
           )}
         </div>
 
-        {/* Submit Button */}
         <div className="form-control pt-6 sm:pt-8">
           <SubmitButton isLogoUploading={isLogoUploading} />
           <div className="text-center mt-3">

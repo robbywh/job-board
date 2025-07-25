@@ -3,7 +3,6 @@ import { LoadingCard } from "@/components/ui/Loading";
 export default function JobsPageSkeleton() {
   return (
     <div className="flex flex-col lg:flex-row gap-8">
-      {/* Filters Skeleton */}
       <div className="lg:w-1/4">
         <div className="card bg-base-100/90 backdrop-blur-sm shadow-lg">
           <div className="card-body space-y-4">
@@ -34,7 +33,6 @@ export default function JobsPageSkeleton() {
         </div>
       </div>
 
-      {/* Job Cards Skeleton */}
       <div className="lg:w-3/4 space-y-4">
         <div className="flex justify-between items-center mb-6">
           <div className="skeleton h-5 w-32"></div>
@@ -45,7 +43,6 @@ export default function JobsPageSkeleton() {
           <LoadingCard key={i} />
         ))}
 
-        {/* Pagination Skeleton */}
         <div className="flex justify-center mt-8">
           <div className="flex space-x-1">
             {[1, 2, 3, 4, 5].map(i => (

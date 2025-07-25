@@ -1,14 +1,12 @@
 import { BreadcrumbItem } from "@/components/ui/Breadcrumb";
 import { Home, LayoutDashboard, Briefcase } from "lucide-react";
 
-// Common icons
 export const HomeIcon = <Home className="w-full h-full" />;
 
 export const DashboardIcon = <LayoutDashboard className="w-full h-full" />;
 
 export const JobsIcon = <Briefcase className="w-full h-full" />;
 
-// Breadcrumb configurations
 export const getBreadcrumbs = {
   home: (): BreadcrumbItem[] => [
     {

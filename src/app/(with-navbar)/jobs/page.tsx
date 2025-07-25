@@ -29,7 +29,6 @@ export default async function JobsPage({
 
   return (
     <>
-      {/* Breadcrumb */}
       <Breadcrumb items={getBreadcrumbs.jobs()} />
 
       <div className="min-h-screen bg-gradient-to-br from-primary/20 via-base-200 to-secondary/20">
