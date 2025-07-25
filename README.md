@@ -253,62 +253,94 @@ erDiagram
 ```
 job-board/
 ├── src/
-│   ├── app/                       # Next.js App Router
-│   │   ├── globals.css            # Global styles with Tailwind imports
-│   │   ├── layout.tsx             # Root layout
-│   │   ├── page.tsx               # Home page
-│   │   ├── LoginForm.tsx          # Login form component
-│   │   ├── auth/                  # Authentication routes
+│   ├── app/                           # Next.js App Router
+│   │   ├── globals.css                # Global styles with Tailwind imports
+│   │   ├── layout.tsx                 # Root layout with providers
+│   │   ├── page.tsx                   # Home page with hero section
+│   │   ├── error.tsx                  # Global error boundary
+│   │   ├── not-found.tsx              # Global 404 page
+│   │   ├── auth/                      # Authentication routes
 │   │   │   └── confirm/
-│   │   │       └── route.ts       # Email confirmation handler
-│   │   ├── login/                 # Login page
-│   │   │   └── actions.tsx        # Login server actions
-│   │   └── (with-navbar)/         # Route group with navbar layout
-│   │       ├── layout.tsx         # Navbar layout wrapper
-│   │       ├── dashboard/         # Dashboard pages
-│   │       │   ├── page.tsx       # Dashboard home
-│   │       │   ├── JobsTable.tsx
-│   │       │   ├── DeleteJobButton.tsx
-│   │       │   ├── actions.ts     # Dashboard server actions
-│   │       │   ├── edit-job/[id]/ # Edit job functionality
-│   │       │   └── post-job/      # Post job functionality
-│   │       └── jobs/              # Job listings
-│   │           ├── page.tsx       # Jobs listing page
-│   │           ├── JobsContent.tsx
-│   │           └── [id]/          # Individual job details
-│   ├── components/                # Reusable UI components
-│   │   ├── job/                   # Job-related components
-│   │   │   ├── JobCard.tsx
-│   │   │   ├── JobFilters.tsx
-│   │   │   └── DeleteJobModal.tsx
-│   │   ├── navbar/                # Navigation components
-│   │   │   ├── Navbar.tsx
-│   │   │   ├── UserDropdown.tsx
-│   │   │   └── LogoutButton.tsx
-│   │   └── ui/                    # Generic UI components
-│   │       ├── Breadcrumb.tsx
-│   │       ├── ErrorDisplay.tsx
-│   │       └── Loading.tsx
-│   ├── lib/                       # Business logic and utilities
-│   │   ├── auth.ts                # Authentication logic
-│   │   ├── jobs.ts                # Job-related business logic
-│   │   ├── user.ts                # User-related logic
-│   │   ├── utils.ts               # General utilities
-│   │   └── breadcrumbs.tsx        # Breadcrumb utilities
-│   ├── types/                     # TypeScript type definitions
-│   │   └── database.ts            # Supabase database schema types
-│   ├── utils/                     # External utilities
-│   │   └── supabase/              # Supabase client configurations
-│   │       ├── client.ts          # Client-side Supabase client
-│   │       ├── server.ts          # Server-side Supabase client
-│   │       └── middleware.ts      # Supabase middleware client
-│   └── middleware.ts              # Next.js middleware for auth
-├── public/                        # Static assets
-│   └── *.svg                      # SVG icons
-├── package.json                   # Dependencies and scripts
-├── next.config.ts                 # Next.js configuration
-├── postcss.config.mjs             # PostCSS configuration
-└── tsconfig.json                  # TypeScript configuration
+│   │   │       └── route.ts           # Email confirmation handler
+│   │   ├── login/                     # Login page
+│   │   │   ├── page.tsx               # Login page with form
+│   │   │   ├── LoginForm.tsx          # Client-side login form
+│   │   │   └── actions.ts             # Server actions for authentication
+│   │   └── (with-navbar)/             # Route group with navbar layout
+│   │       ├── layout.tsx             # Navbar layout wrapper
+│   │       ├── dashboard/             # Dashboard pages (user-specific)
+│   │       │   ├── page.tsx           # Dashboard home with job stats
+│   │       │   ├── JobsTable.tsx      # Data table for user's jobs
+│   │       │   ├── DeleteJobButton.tsx # Delete job action component
+│   │       │   ├── actions.ts         # Dashboard server actions
+│   │       │   ├── loading.tsx        # Dashboard loading skeleton
+│   │       │   ├── error.tsx          # Dashboard error boundary
+│   │       │   ├── edit-job/[id]/     # Edit job functionality
+│   │       │   │   ├── page.tsx       # Edit job form page
+│   │       │   │   ├── EditJobFormClient.tsx # Client form component
+│   │       │   │   ├── DeleteJobWrapper.tsx  # Delete wrapper component
+│   │       │   │   ├── actions.ts     # Edit job server actions
+│   │       │   │   └── loading.tsx    # Edit form loading state
+│   │       │   └── post-job/          # Post new job functionality
+│   │       │       ├── page.tsx       # Post job form page
+│   │       │       ├── PostJobFormServer.tsx # Server form component
+│   │       │       ├── PostJobFormClient.tsx # Client form component
+│   │       │       ├── CompanySelector.tsx   # Company selection widget
+│   │       │       ├── PostJobSkeleton.tsx   # Form loading skeleton
+│   │       │       ├── actions.ts     # Post job server actions
+│   │       │       └── loading.tsx    # Post form loading state
+│   │       └── jobs/                  # Public job listings
+│   │           ├── page.tsx           # Jobs listing page with search
+│   │           ├── JobsContent.tsx    # Client-side jobs grid and filters
+│   │           ├── JobsPageSkeleton.tsx # Jobs page loading skeleton
+│   │           ├── error.tsx          # Jobs error boundary
+│   │           └── [id]/              # Individual job details
+│   │               ├── page.tsx       # Job detail page with breadcrumbs
+│   │               ├── loading.tsx    # Job detail loading state
+│   │               └── not-found.tsx  # Job not found page
+│   ├── components/                    # Reusable UI components
+│   │   ├── job/                       # Job-related components
+│   │   │   ├── JobCard.tsx            # Job listing card component
+│   │   │   ├── JobFilters.tsx         # Search and filter controls
+│   │   │   ├── DeleteJobModal.tsx     # Delete confirmation modal
+│   │   │   └── PauseJobButton.tsx     # Job status toggle component
+│   │   ├── navbar/                    # Navigation components
+│   │   │   ├── Navbar.tsx             # Main navigation bar
+│   │   │   ├── UserDropdown.tsx       # User account dropdown
+│   │   │   ├── LogoutButton.tsx       # Logout action component
+│   │   │   └── DropdownNavLink.tsx    # Dropdown navigation link
+│   │   └── ui/                        # Generic UI components
+│   │       ├── Breadcrumb.tsx         # Navigation breadcrumbs
+│   │       ├── BreadcrumbSkeleton.tsx # Breadcrumb loading state
+│   │       ├── ErrorDisplay.tsx       # Error message component
+│   │       ├── Loading.tsx            # Generic loading spinner
+│   │       └── Footer.tsx             # Site footer component
+│   ├── lib/                           # Business logic and utilities
+│   │   ├── auth.ts                    # Authentication utilities
+│   │   ├── jobs.server.ts             # Server-side job operations
+│   │   ├── user.ts                    # User-related utilities
+│   │   ├── companies.ts               # Client-side company operations
+│   │   ├── companies.server.ts        # Server-side company operations
+│   │   ├── upload.ts                  # Client-side file upload
+│   │   ├── upload.server.ts           # Server-side file upload
+│   │   └── breadcrumbs.tsx            # Breadcrumb configuration
+│   ├── types/                         # TypeScript type definitions
+│   │   └── database.ts                # Supabase database schema types
+│   ├── utils/                         # Utility functions
+│   │   ├── format.ts                  # Data formatting utilities
+│   │   ├── styles.ts                  # CSS class utilities
+│   │   ├── validation.ts              # Form validation utilities
+│   │   └── supabase/                  # Supabase client configurations
+│   │       ├── client.ts              # Client-side Supabase client
+│   │       ├── server.ts              # Server-side Supabase client
+│   │       └── middleware.ts          # Supabase middleware client
+│   └── middleware.ts                  # Next.js middleware for auth
+├── public/                            # Static assets
+│   └── *.svg                          # SVG icons and graphics
+├── package.json                       # Dependencies and scripts
+├── next.config.ts                     # Next.js configuration
+├── postcss.config.mjs                 # PostCSS configuration
+└── tsconfig.json                      # TypeScript configuration
 ```
 
 ## Deployment
