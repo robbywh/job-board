@@ -13,7 +13,7 @@ interface BreadcrumbProps {
 
 export default function Breadcrumb({ items }: BreadcrumbProps) {
   return (
-    <div className="bg-base-100 border-b border-base-200">
+    <div className="bg-base-100 border-b border-base-200 relative z-10">
       <div className="container mx-auto px-3 sm:px-4 py-2 sm:py-3">
         <div className="breadcrumbs text-xs sm:text-sm">
           <ul>
