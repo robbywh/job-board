@@ -79,8 +79,7 @@ export async function toggleJobStatus(jobId: string, newStatus: 'active' | 'inac
     const { error: updateError } = await supabase
       .from('jobs')
       .update({ 
-        status: newStatus,
-        updated_at: new Date().toISOString()
+        status: newStatus
       })
       .eq('id', jobId)
 

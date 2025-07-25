@@ -123,38 +123,6 @@ export default function EditJobFormClient({ job, updateJobAction }: EditJobFormC
 
       <div className="form-control">
         <div className="mb-2">
-          <label className="label-text font-medium">Company <span className="text-error">*</span></label>
-        </div>
-        <div className="flex items-center gap-3 p-3 bg-base-200 rounded-lg">
-          <div className="avatar">
-            <div className="w-10 h-10 rounded bg-base-300">
-              {logoPreview ? (
-                <Image 
-                  src={logoPreview} 
-                  alt={`${job.companies.name} logo`} 
-                  width={40}
-                  height={40}
-                  className="object-cover rounded" 
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-base-content/60">
-                  <Building2 className="w-5 h-5" />
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="flex-1">
-            <div className="font-semibold">{job.companies.name}</div>
-            <div className="text-sm text-base-content/60">Company name cannot be changed when editing</div>
-          </div>
-        </div>
-        <input type="hidden" name="companyId" value={job.company_id} />
-        <input type="hidden" name="isNewCompany" value="false" />
-        <input type="hidden" name="logoUrl" value={logoUrl} />
-      </div>
-
-      <div className="form-control">
-        <div className="mb-2">
           <label className="label-text font-medium">Company Logo <span className="text-base-content/60">(optional)</span></label>
           <span className="label-text-alt text-base-content/60 text-xs ml-2">PNG, JPG, WebP, SVG • Max 2MB</span>
         </div>

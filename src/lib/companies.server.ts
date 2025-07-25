@@ -85,8 +85,7 @@ export async function updateCompanyLogo(id: string, logoUrl: string): Promise<bo
   const { error } = await supabase
     .from('companies')
     .update({
-      logo_url: logoUrl,
-      updated_at: new Date().toISOString()
+      logo_url: logoUrl
     })
     .eq('id', id);
   

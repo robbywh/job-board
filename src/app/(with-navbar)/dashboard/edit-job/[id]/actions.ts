@@ -75,8 +75,7 @@ export async function updateJob(prevState: FormState, formData: FormData): Promi
         title,
         description,
         location,
-        type: jobType,
-        updated_at: new Date().toISOString()
+        type: jobType
       })
       .eq('id', jobId)
 
@@ -94,8 +93,7 @@ export async function updateJob(prevState: FormState, formData: FormData): Promi
       const { error: companyUpdateError } = await supabase
         .from('companies')
         .update({
-          logo_url: logoUrl,
-          updated_at: new Date().toISOString()
+          logo_url: logoUrl
         })
         .eq('id', companyId)
 
