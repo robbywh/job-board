@@ -36,12 +36,12 @@ export async function signup(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  const { data: existingUserId } = await supabase.rpc(
+  const { data: existingUserIds } = await supabase.rpc(
     'get_user_id_by_email',
     { email }
   )
 
-  if (existingUserId) {
+  if (existingUserIds && existingUserIds.length > 0) {
     return { error: 'An account with this email already exists. Please sign in instead.' }
   }
 
