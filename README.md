@@ -107,6 +107,15 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
+CREATE OR REPLACE FUNCTION get_user_id_by_email(email TEXT)
+RETURNS TABLE (id uuid)
+SECURITY definer
+AS $$
+BEGIN
+  RETURN QUERY SELECT au.id FROM auth.users au WHERE au.email = $1;
+END;
+$$ LANGUAGE plpgsql;
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
 CREATE INDEX IF NOT EXISTS idx_users_created_at ON public.users(created_at);

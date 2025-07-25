@@ -26,11 +26,6 @@ export function handleAuthError(error: AuthError | null): AuthResult {
         success: false,
         error: 'Please check your email and confirm your account before signing in.'
       }
-    case 'User already registered':
-      return {
-        success: false,
-        error: 'An account with this email already exists. Please sign in instead.'
-      }
     case 'Signup disabled':
       return {
         success: false,

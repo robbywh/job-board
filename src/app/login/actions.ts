@@ -36,6 +36,15 @@ export async function signup(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
+  const { data: existingUserId } = await supabase.rpc(
+    'get_user_id_by_email',
+    { email }
+  )
+
+  if (existingUserId) {
+    return { error: 'An account with this email already exists. Please sign in instead.' }
+  }
+
   const validation = validateAuthInput(email, password)
   if (!validation.success) {
     return { error: validation.error }
@@ -51,11 +60,16 @@ export async function signup(formData: FormData) {
     return { error: authResult.error }
   }
 
+  const userIdResult = handleAuthError(authError)
+  if (!userIdResult.success) {
+    return { error: userIdResult.error }
+  }
+
   revalidatePath('/', 'layout')
-  
+
   if (authData.user && !authData.user.email_confirmed_at) {
     return { emailConfirmation: true }
   }
-  
+
   redirect('/dashboard')
 }
