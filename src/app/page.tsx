@@ -48,11 +48,12 @@ export default async function Home() {
                 <div className="stat-value text-secondary">500+</div>
               </div>
             </div>
-
-            <Link href="/jobs" className="btn btn-primary btn-lg group">
-              <Search className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-              Browse Jobs
-            </Link>
+            <div>
+              <Link href="/jobs" className="btn btn-primary btn-lg group">
+                <Search className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                Browse Jobs
+              </Link>
+            </div>
           </div>
           
           <LoginForm />
