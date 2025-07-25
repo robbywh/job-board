@@ -232,10 +232,8 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
                   className="flex items-center gap-3 p-3 sm:p-3 hover:bg-primary/10 cursor-pointer transition-colors border-t border-base-300 active:bg-primary/20"
                   onClick={handleCreateNew}
                 >
-                  <div className="avatar flex-shrink-0">
-                    <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center">
-                      <Plus className="w-4 h-4 text-primary" />
-                    </div>
+                  <div className="w-8 h-8 rounded bg-primary/20 flex items-center justify-center ak">
+                    <Plus className="w-4 h-4 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-primary text-sm truncate">Create &quot;{searchTerm}&quot;</p>
@@ -276,7 +274,7 @@ export default function CompanySelector({ onCompanySelect, onLogoSelect, onUploa
                   className="object-cover rounded-lg" 
                 />
               ) : (
-                <ImageIcon className="w-6 h-6 text-base-content/40" />
+                <ImageIcon className="w-16 h-16 text-base-content/40" />
               )}
             </div>
           </div>
