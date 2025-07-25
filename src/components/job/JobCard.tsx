@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Building2, MapPin, Clock } from 'lucide-react';
-import { getJobTypeColor, getRelativeTime, truncateText } from "@/lib/utils";
+import { getRelativeTime, truncateText } from "@/utils/format";
+import { getJobTypeColor } from "@/utils/styles";
 
 interface Job {
   id: string | number;

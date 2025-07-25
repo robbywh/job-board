@@ -1,5 +1,5 @@
 import { AuthError } from '@supabase/supabase-js'
-import { validateEmail } from './utils'
+import { validateEmail } from '@/utils/validation'
 
 export interface AuthResult {
   success: boolean

@@ -1,4 +1,4 @@
-// Date utilities
+// Date formatting utilities
 export function formatDate(date: string | Date): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
   return dateObj.toLocaleDateString('en-US', {
@@ -22,36 +22,7 @@ export function getRelativeTime(date: string | Date): string {
   return `${Math.floor(diffInDays / 365)} years ago`;
 }
 
-// Job utilities
-export function getJobTypeColor(type: string): string {
-  switch (type.toLowerCase()) {
-    case 'full-time':
-      return 'badge-primary';
-    case 'part-time':
-      return 'badge-secondary';
-    case 'contract':
-      return 'badge-accent';
-    default:
-      return 'badge-neutral';
-  }
-}
-
-export function getJobStatusColor(status: string): string {
-  switch (status.toLowerCase()) {
-    case 'active':
-      return 'badge-success';
-    case 'paused':
-      return 'badge-warning';
-    case 'closed':
-      return 'badge-error';
-    case 'draft':
-      return 'badge-ghost';
-    default:
-      return 'badge-neutral';
-  }
-}
-
-// Text utilities
+// Text formatting utilities
 export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength) + '...';
@@ -60,10 +31,3 @@ export function truncateText(text: string, maxLength: number): string {
 export function capitalizeFirst(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
-// Validation utilities
-export function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
-
