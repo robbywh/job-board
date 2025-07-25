@@ -1,4 +1,4 @@
-import { updateJob } from "../../actions";
+import { updateJob } from "./actions";
 import { createClient } from "@/utils/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { CheckCircle } from 'lucide-react';
@@ -23,6 +23,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
   if (!job) {
     notFound();
   }
+
 
   return (
     <>
@@ -50,7 +51,7 @@ export default async function EditJobPage({ params }: { params: Promise<{ id: st
                   
                   <EditJobFormClient 
                     job={job}
-                    updateJobAction={updateJob.bind(null, id)}
+                    updateJobAction={updateJob}
                   />
                 </div>
               </div>

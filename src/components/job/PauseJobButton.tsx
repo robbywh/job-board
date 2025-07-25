@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { PauseCircle, FileX } from 'lucide-react';
-import { toggleJobStatus } from '@/app/(with-navbar)/dashboard/actions';
+import { toggleJobStatus } from '@/actions/job-actions';
 
 interface PauseJobButtonProps {
   jobId: string;

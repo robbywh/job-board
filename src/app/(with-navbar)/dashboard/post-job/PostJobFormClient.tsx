@@ -3,7 +3,7 @@
 import { useActionState, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Plus, CheckCircle, AlertCircle } from 'lucide-react';
-import { createJob } from '../actions';
+import { createJob } from './actions';
 import CompanySelector from './CompanySelector';
 
 const initialState = {

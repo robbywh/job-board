@@ -2,7 +2,14 @@
 
 import Image from 'next/image';
 import { useFormStatus } from 'react-dom';
-import { Check } from 'lucide-react';
+import { useActionState } from 'react';
+import { Check, AlertCircle } from 'lucide-react';
+
+interface FormState {
+  success: boolean;
+  error: string | null;
+  errors: Record<string, string[]>;
+}
 
 interface EditJobFormClientProps {
   job: {
@@ -17,7 +24,7 @@ interface EditJobFormClientProps {
       logo_url: string | null;
     };
   };
-  updateJobAction: (formData: FormData) => void;
+  updateJobAction: (prevState: FormState, formData: FormData) => Promise<FormState>;
 }
 
 function SubmitButton() {
@@ -45,8 +52,29 @@ function SubmitButton() {
 }
 
 export default function EditJobFormClient({ job, updateJobAction }: EditJobFormClientProps) {
+  const [state, formAction] = useActionState(updateJobAction, {
+    success: false,
+    error: null,
+    errors: {}
+  });
+
   return (
-    <form action={updateJobAction} className="space-y-5">
+    <form action={formAction} className="space-y-5">
+      <input type="hidden" name="jobId" value={job.id} />
+      
+      {state.error && (
+        <div className="alert alert-error">
+          <AlertCircle className="w-4 h-4" />
+          <span>{state.error}</span>
+        </div>
+      )}
+      
+      {state.success && (
+        <div className="alert alert-success">
+          <Check className="w-4 h-4" />
+          <span>Job updated successfully!</span>
+        </div>
+      )}
       <div className="form-control">
         <div className="mb-2">
           <label className="label-text font-medium">Job Title <span className="text-error">*</span></label>
@@ -56,9 +84,14 @@ export default function EditJobFormClient({ job, updateJobAction }: EditJobFormC
           type="text" 
           defaultValue={job.title}
           placeholder="e.g. Senior React Developer"
-          className="input input-bordered focus:input-primary text-base" 
+          className={`input input-bordered focus:input-primary text-base ${state.errors?.title ? 'input-error' : ''}`}
           required 
         />
+        {state.errors?.title && (
+          <div className="label">
+            <span className="label-text-alt text-error">{state.errors.title[0]}</span>
+          </div>
+        )}
       </div>
 
       <div className="form-control">

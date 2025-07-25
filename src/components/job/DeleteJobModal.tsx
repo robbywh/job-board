@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { AlertTriangle, Trash2 } from 'lucide-react';
-import { deleteJob } from '@/app/(with-navbar)/dashboard/actions';
+import { deleteJob } from '@/actions/job-actions';
 
 interface DeleteJobModalProps {
   jobId: string;
