@@ -39,16 +39,6 @@ export default function DeleteJobModal({ jobId, jobTitle, onDelete, trigger }: D
         <div className="modal modal-open">
           <div className="modal-box">
             <h3 className="font-bold text-lg mb-4">Delete Job Posting</h3>
-            
-            <div className="mb-6">
-              <div className="alert alert-warning">
-                <AlertTriangle className="w-6 h-6 shrink-0" />
-                <div>
-                  <h4 className="font-semibold">This action cannot be undone</h4>
-                  <div className="text-sm opacity-80">This will permanently delete the job posting and all associated data.</div>
-                </div>
-              </div>
-            </div>
 
             <div className="bg-base-200 p-4 rounded-lg mb-6">
               <div className="font-medium text-base-content/80 mb-1">Job Title:</div>
