@@ -1,10 +1,7 @@
 import { BreadcrumbItem } from "@/components/ui/Breadcrumb";
-import { Home, LayoutDashboard, Briefcase } from "lucide-react";
+import { Home, Briefcase } from "lucide-react";
 
 export const HomeIcon = <Home className="w-full h-full" />;
-
-export const DashboardIcon = <LayoutDashboard className="w-full h-full" />;
-
 export const JobsIcon = <Briefcase className="w-full h-full" />;
 
 export const getBreadcrumbs = {
@@ -47,8 +44,8 @@ export const getBreadcrumbs = {
 
   dashboard: (): BreadcrumbItem[] => [
     {
-      label: "Dashboard",
-      icon: DashboardIcon,
+      label: "Home",
+      icon: HomeIcon,
       isActive: true
     }
   ],
@@ -57,7 +54,7 @@ export const getBreadcrumbs = {
     {
       label: "Dashboard",
       href: "/dashboard",
-      icon: DashboardIcon
+      icon: HomeIcon
     },
     {
       label: "Edit Job",
@@ -69,11 +66,11 @@ export const getBreadcrumbs = {
     {
       label: "Dashboard",
       href: "/dashboard",
-      icon: DashboardIcon
+      icon: HomeIcon
     },
     {
       label: "Post New Job",
       isActive: true
     }
-  ]
+  ],
 };

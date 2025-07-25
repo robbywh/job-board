@@ -1,7 +1,7 @@
 'use client'
 
 import { User } from "@supabase/supabase-js";
-import { Briefcase, LayoutDashboard } from 'lucide-react';
+import { Briefcase, Home } from 'lucide-react';
 import DropdownNavLink from "./DropdownNavLink";
 import LogoutButton from "./LogoutButton";
 
@@ -41,15 +41,15 @@ export default function UserDropdown({ user }: UserDropdownProps) {
             colorScheme="primary"
             onClose={closeDropdown}
             icon={
-              <LayoutDashboard className="w-4 h-4" />
+              <Home className="w-4 h-4" />
             }
           >
-            Dashboard
+            Home
           </DropdownNavLink>
         </li>
         <li>
           <DropdownNavLink 
-            href="/jobs"
+            href="/jobs?from=dashboard"
             colorScheme="secondary"
             onClose={closeDropdown}
             icon={
